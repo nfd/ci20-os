@@ -6,10 +6,10 @@ CFLAGS=-Os
 
 OBJS=start.o main.o
 
-hello.bin: hello.elf
+os.bin: os.elf
 	$(OBJCOPY) -O binary $< $@
 
-hello.elf: $(OBJS)
+os.elf: $(OBJS)
 	$(LD) -T linker.lds -o $@ $+
 
 %.o: %.[Sc]
