@@ -4,7 +4,7 @@ LD=mipsel-unknown-elf-ld
 OBJCOPY=mipsel-unknown-elf-objcopy
 CFLAGS=-Os
 
-OBJS=start.o main.o
+OBJS=start.o debug_uart.o main.o
 
 os.bin: os.elf
 	$(OBJCOPY) -O binary $< $@

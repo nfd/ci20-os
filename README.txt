@@ -1,8 +1,11 @@
-This is a MIPS CI20 Hello World program.
+This is a MIPS CI20 experimental operating system.
 
-See the blog posts about it for instructions:
+Commands to load it from serial port:
 
-http://code.lardcave.net/2015/02/10/1/
+make && cp os.bin /private/tftpboot/
+setenv serverip 192.168.1.12
+setenv ipaddr 192.168.1.7
+tftpboot 0x80000000 192.168.1.12:os.bin
+go 0x80000000
 
-http://code.lardcave.net/2015/02/10/2/
 

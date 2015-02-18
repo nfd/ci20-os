@@ -8,7 +8,7 @@
 
 _start:
 	/* Set up a stack */
-	li sp, 0x89000000 
+	li sp, 0x81000000 
 
 	/* And jump to C */
 	la t0, entrypoint
