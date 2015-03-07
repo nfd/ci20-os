@@ -34,3 +34,7 @@
 #define fp $30 /* frame pointer */
 #define ra $31 /* return address */
 
+#define CP0_STATUS $12
+#define CP0_CAUSE $13
+#define CP0_CONFIG $16
+

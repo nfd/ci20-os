@@ -31,7 +31,7 @@
 #define UART_UMCR_MDCE (1 << 7) /* Modem control enable */
 #define UART_UMCR_FCM  (1 << 6) /* 1 = hardware, 0 = software */
 #define UART_UMCR_LOOP (1 << 4) /* Loopback testing mode */
-#define UART_UMCR_RTS  (1 << 1) /* Force RTS high */
+#define UART_UMCR_RTS  (1 << 1) /* RTS */
 
 #define UART_UFCR_RTDR_1  (0 << 6)
 #define UART_UFCR_RTDR_16 (1 << 6)
@@ -42,6 +42,15 @@
 #define UART_UFCR_TFRT    (1 << 2) /* Transmit holding register reset */
 #define UART_UFCR_RFRT    (1 << 1) /* Receive buffer reset */
 #define UART_UFCR_FME     (1 << 0) /* FIFO mode enable */
+
+#define UART_ULSR_FIFOE (1 << 7) /* FIFO Error Status. (FIFO mode only) */
+#define UART_ULSR_TEMP  (1 << 6) /* Transmit Holding Register Empty. */
+#define UART_ULSR_TDRQ  (1 << 5) /* Transmit Data Request. */
+#define UART_ULSR_BI    (1 << 4) /* Break Interrupt. */
+#define UART_ULSR_FMER  (1 << 3) /* Framing Error. */
+#define UART_ULSR_PARER (1 << 2) /* Parity Error. */
+#define UART_ULSR_OVER  (1 << 1) /* Overrun Error. */
+#define UART_ULSR_DRY   (1 << 0) /* Data Ready. */
 
 void debug_uart_init(void);
 void debug_uart_putc(char c);
