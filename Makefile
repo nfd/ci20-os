@@ -2,10 +2,10 @@ AS=mipsel-unknown-elf-as -mips32
 CC=mipsel-unknown-elf-gcc -mips32
 LD=mipsel-unknown-elf-ld
 OBJCOPY=mipsel-unknown-elf-objcopy
-CFLAGS=-Os
+CFLAGS=-Os -std=c99 -Wall -Werror
 
-OS_OBJS=start.o debug_uart.o main.o timer.o
-STAGE1_OBJS=stage1.o stage1_main.o debug_uart.o ci20board.o
+OS_OBJS=start.o uart.o main.o timer.o
+STAGE1_OBJS=stage1.o stage1_main.o uart.o ci20board.o timer.o
 
 os.bin: os.elf
 bootloader.bin: bootloader.elf

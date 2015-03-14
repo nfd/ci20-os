@@ -1,13 +1,7 @@
 #define EXTCLK 48000000 /* 48 MHz external clock driving the serial line */
 
-/* Peripherals */
 #define CPM_BASE   0xb0000000
-#define TCU_BASE   0xb0002000
 #define GPIO_BASE  0xb0010000
-#define UART0_BASE 0xb0030000
-#define UART1_BASE 0xb0031000
-#define UART2_BASE 0xb0032000
-#define UART3_BASE 0xb0033000
 #define MSC0_BASE  0xb3450000
 #define MSC1_BASE  0xb3460000
 #define MSC2_BASE  0xb3470000

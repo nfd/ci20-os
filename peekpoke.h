@@ -19,7 +19,3 @@ static inline unsigned int peek32(unsigned int addr)
 	return *ptr;
 }
 
-static inline void update_l(unsigned int addr, unsigned int val)
-{
-	poke32(addr, read_l(addr) | val);
-}
