@@ -167,8 +167,7 @@ void uart_print(char *fmt, ...)
 	va_start(args, fmt);
 	for(;*fmt;) {
 		char c = *fmt++;
-		switch(c) {
-		case '%':
+		if(c == '%') {
 			switch(*fmt++) {
 			case 'x':
 				switch(*fmt++) {
@@ -187,13 +186,10 @@ void uart_print(char *fmt, ...)
 				uart_puts(va_arg(args, char *));
 				break;
 			}
-			break;
-		default:
+		} else {
 			uart_putc(c);
-			break;
 		}
 	}
-
 	va_end(args);
 }
 

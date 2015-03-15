@@ -130,7 +130,7 @@
 void os_timer_init()
 {
 	/* Initial set-up */
-	poke32(TCU_OSTCSR, OSTCSR_PRESCALE_16);
+	poke32(TCU_OSTCSR, OSTCSR_CNT_MD | OSTCSR_PRESCALE_16);
 
 	/* Counter */
 	poke32(TCU_OSTCNTH, 0);
@@ -139,7 +139,7 @@ void os_timer_init()
 	/* Clock set */
 	poke32(TCU_OSTCSR, peek32(TCU_OSTCSR) | OSTCSR_EXT_EN);
 
-	/* Enable timer 0*/
+	/* Enable the timer*/
 	poke32(TESR, TER_OSTEN);
 }
 
@@ -150,9 +150,8 @@ uint64_t os_timer_getval(void)
 
 void usleep(uint64_t usec)
 {
-	// NB doesn't handle the wrap case, whic, with 64-bit values and 3 million
+	// NB doesn't handle the wrap case, which, with 64-bit values and 3 million
 	// ticks per second, may crop up once every 194980 years.
-
 	uint64_t target = os_timer_getval() + (usec * OS_TIMER_USEC_DIV);
 
 	while(os_timer_getval() < target)
