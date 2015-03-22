@@ -78,15 +78,26 @@ static inline uint32_t uart_r(uint32_t addr) {
 	return peek32(UART(uart_num) + addr);
 }
 
+static void board_specific_init(void)
+{
+	/* Enable UART 4 GPIOs */
+	poke32(GPIO(C, INTC),  PIN_UART4_TXD | PIN_UART4_RXD); // GPIO/Device, not IRQ
+	poke32(GPIO(C, MSKC),  PIN_UART4_TXD | PIN_UART4_RXD); // Device, not GPIO
+	poke32(GPIO(C, PAT1S), PIN_UART4_TXD | PIN_UART4_RXD); // Device 2 or 3
+	poke32(GPIO(C, PAT0C), PIN_UART4_TXD | PIN_UART4_RXD); // Device 2
+
+	/* Enable UART4 clock. UARTs are clocked from EXTCLK: no PLL required. */
+	poke32(CPM_CLKGR1, peek32(CPM_CLKGR1) & ~CLKGR1_UART4);
+}
+
 void uart_init(void)
 {
 	/* The jz47xx UART is like a 16550, except that it also needs a "uart module enable"
 	 * bit to be set (UART_UFCR_UME) before it will do anything.
-	 *
-	 * Note that board init must be completed first to enable the UART-specific
-	 * GPIOs and the UART clock. 
 	*/
 	const uint32_t uart_divisor = EXTCLK / 16 / UART_BPS;
+
+	board_specific_init();
 
 	/* Disable UART4 interrupts */
 	uart_w(UIER, 0);

@@ -9,18 +9,14 @@
 .text
 
 _start:
-	move t0, ra
-	move t1, sp
-
 	li  sp, 0xf4004000
 
 	jal   entrypoint
 
-	move sp, t1
-	move ra, t0
-
 	j ra
 
+1:
+	j 1b
 
 .end _start
 
