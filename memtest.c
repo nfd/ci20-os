@@ -11,7 +11,7 @@ void memtest(void)
 	unsigned i;
 	uint32_t expected = 0, got = 0;
 
-	uart_print("Starting memory test...");
+	uart_print("Starting memory test...\r\n");
 
 	for(i = MEM_START; i < MEM_END; i += (sizeof(uint32_t))) {
 		uint32_t *ptr = (uint32_t *)i;

@@ -4,6 +4,7 @@
 #include "pllclock.h"
 #include "peekpoke.h"
 #include "memtest.h"
+#include "ddr.h"
 
 void ci20board_init();
 
