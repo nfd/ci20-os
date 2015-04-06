@@ -740,7 +740,7 @@ def generate(output):
 		assert ram.refresh_clock_divider == 'DIV32' 
 
 		# Self-refresh delay: average refresh interval (ns) / length of a refresh interval tick (ns)
-		ram.ddr_drefcnt_con = self.tREFI.ns // self.ticks_to_ns(32)
+		ram.ddr_drefcnt_con = TCK('int(ram.tREFI.ns // ram.ticks_to_ns(32))')
 
 		# Use tCKE as intended for DDR controller and PHY.
 		ram.ddr_dtiming4_tCKE = ram.tCKE
