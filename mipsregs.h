@@ -38,3 +38,5 @@
 #define CP0_CAUSE $13
 #define CP0_CONFIG $16
 
+#define CACHE_MODE_CACHABLE_NONCOHERENT 3
+

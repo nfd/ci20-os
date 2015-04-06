@@ -5,7 +5,7 @@ ENTRY(_start)
 SECTIONS
 {
 	/* Our base address */
-	. = 0xf4000000;
+	. = 0xf4000800;
 
 	/* Code */
 	.text : {

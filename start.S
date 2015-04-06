@@ -17,17 +17,3 @@ _start:
 
 .end _start
 
-.org 0x180
-.globl _exception
-/* Tell binutils it's a function */
-.ent _exception
-_exception:
-	li sp, 0x81000000 
-
-	/* And jump to C */
-	la t0, exception_handler
-	jal t0 /* assembler adds nop automatically */
-	eret
-
-.end _exception
-

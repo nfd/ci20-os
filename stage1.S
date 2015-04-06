@@ -9,11 +9,14 @@
 .text
 
 _start:
+	/* Enable caching in kseg0 */
+	li      t0, CACHE_MODE_CACHABLE_NONCOHERENT
+	mtc0    t0, CP0_CONFIG
+	nop
+
 	li  sp, 0xf4004000
 
 	jal   entrypoint
-
-	j ra
 
 1:
 	j 1b

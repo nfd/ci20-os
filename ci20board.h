@@ -8,6 +8,8 @@
 /* Devices */
 #define CPM_BASE   0xb0000000
 #define GPIO_BASE  0xb0010000
+#define DDR_BASE   0xb3010000
+#define DDRP_BASE  0xb3011000
 #define MSC0_BASE  0xb3450000
 #define MSC1_BASE  0xb3460000
 #define MSC2_BASE  0xb3470000
@@ -21,6 +23,7 @@
 #define CPM_CLKGR0 (CPM_BASE + 0x20)
 #define CPM_CLKGR1 (CPM_BASE + 0x28)
 #define CPM_DDRCDR (CPM_BASE + 0x2C)
+#define CPM_DRCG   (CPM_BASE + 0xD0)
 
 /* Affects CPCCR */
 #define CPCCR_SEL_SRC_APLL     (1 << 30)
@@ -77,6 +80,74 @@
 #define DDRCDR_DDR_BUSY    (1 << 28)
 #define DDRCDR_DDR_STOP    (1 << 27)
 #define DDRCDR_CDR_SHIFT   0
+
+/* DDR controller */
+#define DDR_DSTATUS   (DDR_BASE + 0x0)
+#define DDR_DCFG      (DDR_BASE + 0x4)
+#define DDR_DCTRL     (DDR_BASE + 0x8)
+#define DDR_DLMR      (DDR_BASE + 0xc)
+#define DDR_DREFCNT   (DDR_BASE + 0x18)
+#define DDR_DMMAP0    (DDR_BASE + 0x24)
+#define DDR_DMMAP1    (DDR_BASE + 0x28)
+#define DDR_DTIMING1  (DDR_BASE + 0x60)
+#define DDR_DTIMING2  (DDR_BASE + 0x64)
+#define DDR_DTIMING3  (DDR_BASE + 0x68)
+#define DDR_DTIMING4  (DDR_BASE + 0x6c)
+#define DDR_DTIMING5  (DDR_BASE + 0x70)
+#define DDR_DTIMING6  (DDR_BASE + 0x74)
+#define DDR_DREMAP1   (DDR_BASE + 0x9c)
+#define DDR_DREMAP2   (DDR_BASE + 0xa0)
+#define DDR_DREMAP3   (DDR_BASE + 0xa4)
+#define DDR_DREMAP4   (DDR_BASE + 0xa8)
+#define DDR_DREMAP5   (DDR_BASE + 0xac)
+#define DDR_DDLP      (DDR_BASE + 0xbc)
+#define DDR_WCMDCTRL1 (DDR_BASE + 0x100)
+#define DDR_RCMDCTRL0 (DDR_BASE + 0x104)
+#define DDR_RCMDCTRL1 (DDR_BASE + 0x108)
+#define DDR_WDATTHD0  (DDR_BASE + 0x114)
+#define DDR_WDATTHD1  (DDR_BASE + 0x118)
+#define DDR_IPORTPRI  (DDR_BASE + 0x128)
+
+/* DDR PHY */
+#define DDRP_PIR    (DDRP_BASE + 0x04)
+#define DDRP_PGCR   (DDRP_BASE + 0x08)
+#define DDRP_PGSR   (DDRP_BASE + 0x0c)
+#define DDRP_PTR0   (DDRP_BASE + 0x18)
+#define DDRP_PTR1   (DDRP_BASE + 0x1c)
+#define DDRP_PTR2   (DDRP_BASE + 0x20)
+#define DDRP_ACIOCR (DDRP_BASE + 0x24)
+#define DDRP_DXCCR  (DDRP_BASE + 0x28)
+#define DDRP_DSGCR  (DDRP_BASE + 0x2c)
+#define DDRP_DCR    (DDRP_BASE + 0x30)
+#define DDRP_DTPR0  (DDRP_BASE + 0x34)
+#define DDRP_DTPR1  (DDRP_BASE + 0x38)
+#define DDRP_DTPR2  (DDRP_BASE + 0x3c)
+#define DDRP_MR0    (DDRP_BASE + 0x40)
+#define DDRP_MR1    (DDRP_BASE + 0x44)
+#define DDRP_MR2    (DDRP_BASE + 0x48)
+#define DDRP_MR3    (DDRP_BASE + 0x4c)
+#define DDRP_ODTCR  (DDRP_BASE + 0x50)
+#define DDRP_DTAR   (DDRP_BASE + 0x54)
+#define DDRP_DTDR0  (DDRP_BASE + 0x58)
+#define DDRP_DTDR1  (DDRP_BASE + 0x5c)
+#define DDRP_DCUAR  (DDRP_BASE + 0xc0)
+#define DDRP_DCUDR  (DDRP_BASE + 0xc4)
+#define DDRP_DCURR  (DDRP_BASE + 0xc8)
+#define DDRP_DCULR  (DDRP_BASE + 0xcc)
+#define DDRP_DCUGCR (DDRP_BASE + 0xd0)
+#define DDRP_DCUTPR (DDRP_BASE + 0xd4)
+#define DDRP_DCUSR0 (DDRP_BASE + 0xd8)
+#define DDRP_DCUSR1 (DDRP_BASE + 0xdc)
+#define DDRP_ZQXCR0 (DDRP_BASE + 0x180)
+#define DDRP_ZQXCR1 (DDRP_BASE + 0x184)
+#define DDRP_DXGCR0 (DDRP_BASE + 0x1c0 + (0x40 * 0))
+#define DDRP_DXGCR1 (DDRP_BASE + 0x1c0 + (0x40 * 1))
+#define DDRP_DXGCR2 (DDRP_BASE + 0x1c0 + (0x40 * 2))
+#define DDRP_DXGCR3 (DDRP_BASE + 0x1c0 + (0x40 * 3))
+#define DDRP_DXGCR4 (DDRP_BASE + 0x1c0 + (0x40 * 4))
+#define DDRP_DXGCR5 (DDRP_BASE + 0x1c0 + (0x40 * 5))
+#define DDRP_DXGCR6 (DDRP_BASE + 0x1c0 + (0x40 * 6))
+#define DDRP_DXGCR7 (DDRP_BASE + 0x1c0 + (0x40 * 7))
 
 /* GPIOs */
 #define GPIO_BANK_A 0x0

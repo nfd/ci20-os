@@ -1,11 +1,4 @@
-This is a MIPS CI20 experimental operating system.
+Code to accompany the CI20 baremetal project.
 
-Commands to load it from serial port:
-
-make && cp os.bin /private/tftpboot/
-setenv serverip 192.168.1.12
-setenv ipaddr 192.168.1.7
-tftpboot 0x80000000 192.168.1.12:os.bin
-go 0x80000000
-
+Info: http://code.lardcave.net/2015/03/31/1/
 

@@ -3,48 +3,36 @@
 #include "timer.h"
 #include "uart.h"
 
-#define MEM_START 0xA0000000
-#define MEM_END   0xB0000000
+#define MEM_START 0x80000000
+#define MEM_END   (MEM_START + (32*1024*1024)) /* Just test a small part, for speed */
 
 void memtest(void)
 {
 	unsigned i;
 	uint32_t expected = 0, got = 0;
-
-	uart_print("Starting memory test...\r\n");
+	uart_puts("Performing memory test...");
 
 	for(i = MEM_START; i < MEM_END; i += (sizeof(uint32_t))) {
-		uint32_t *ptr = (uint32_t *)i;
+		volatile uint32_t *ptr = (uint32_t *)i;
 
-		if(i % 8)
-			*ptr = 0x55555555;
-		else
-			*ptr = 0xAAAAAAAA;
-
-		if(i % (1 << 20)) {
-			uart_putc('.');
-		}
+		*ptr = i + 2;
 	}
 
 	for(i = MEM_START; i < MEM_END; i += (sizeof(uint32_t))) {
-		got = *((uint32_t *)i);
+		volatile uint32_t *ptr = (uint32_t *)i;
+		got = *ptr;
 
-		if(i % 8) {
-			expected = 0x55555555;
-		} else {
-			expected = 0xAAAAAAAA;
-		}
+		expected = i + 2;
 
 		if(expected != got) {
-			uart_print("Location %x4, expected %x4, got %x4\r\n", i, expected, got);
 			break;
 		}
 	}
 
 	if(expected != got) {
-		uart_print("Memory test failed.\r\n");
+		uart_puts("FAILED!\r\n");
 	} else {
-		uart_print("Memory test passed.\r\n");
+		uart_puts("passed.\r\n");
 	}
 }
 
