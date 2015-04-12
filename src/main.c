@@ -1,7 +1,7 @@
-#include "peekpoke.h"
+#include "libci20/peekpoke.h"
 #include "ci20board.h"
-#include "uart.h"
-#include "timer.h"
+#include "libci20/uart.h"
+#include "libci20/timer.h"
 
 void entrypoint(void)
 {

@@ -1,4 +1,5 @@
 *.bin
 *.elf
 *.o
-ddr.c
+build/*
+__pycache__/*

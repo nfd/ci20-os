@@ -1,7 +1,7 @@
 #include <stdarg.h>
 
-#include "uart.h"
-#include "peekpoke.h"
+#include "libci20/uart.h"
+#include "libci20/peekpoke.h"
 #include "ci20board.h"
 #include "inttypes.h"
 

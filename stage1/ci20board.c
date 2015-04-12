@@ -1,5 +1,5 @@
 #include "inttypes.h"
-#include "peekpoke.h"
+#include "libci20/peekpoke.h"
 #include "ci20board.h"
 
 void ci20board_init(void)

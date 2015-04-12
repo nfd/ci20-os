@@ -1,7 +1,7 @@
 #include "memtest.h"
 #include "inttypes.h"
-#include "timer.h"
-#include "uart.h"
+#include "libci20/timer.h"
+#include "libci20/uart.h"
 
 #define MEM_START 0x80000000
 #define MEM_END   (MEM_START + (32*1024*1024)) /* Just test a small part, for speed */

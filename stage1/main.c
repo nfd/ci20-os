@@ -1,8 +1,8 @@
-#include "uart.h"
+#include "libci20/uart.h"
 #include "ci20board.h"
-#include "timer.h"
-#include "pllclock.h"
-#include "peekpoke.h"
+#include "libci20/timer.h"
+#include "libci20/pllclock.h"
+#include "libci20/peekpoke.h"
 #include "memtest.h"
 #include "ddr.h"
 

@@ -344,9 +344,9 @@ AUTOGEN_HEADER = """\
  * See ddr.py for details.
 */
 
-#include "peekpoke.h"
+#include "libci20/peekpoke.h"
 #include "ci20board.h"
-#include "timer.h"
+#include "libci20/timer.h"
 
 static void read_clear_write(uint32_t addr, uint32_t mask)
 {
