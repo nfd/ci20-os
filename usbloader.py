@@ -94,7 +94,8 @@ class UsbLoader:
 
 def main():
 	parser = optparse.OptionParser()
-	# TODO non-default load address and entry point
+	parser.add_option('--load-address', type="int", default=JZ4780_TCSM_START)
+	parser.add_option('--entrypoint', type="int", default=JZ4780_TCSM_START)
 	opts, args = parser.parse_args()
 
 	stage1 = args[0]
@@ -104,7 +105,7 @@ def main():
 		data = h.read()
 
 	loader = UsbLoader()
-	loader.boot_stage1(data, JZ4780_TCSM_START, JZ4780_TCSM_START)
+	loader.boot_stage1(data, opts.load_address, opts.entrypoint)
 
 if __name__ == '__main__':
 	main()

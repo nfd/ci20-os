@@ -20,11 +20,7 @@ void entrypoint()
 
 	memtest();
 
-	while(1) {
-		uint64_t val = os_timer_getval();
-		uint64_t secs_approx = ((val >> 10) * 179) >>19; /* Very approx. :) */
-		uart_print("Uptime in seconds: %x8.\r\n", secs_approx);
-		usleep(1000000);
-	}
+	usleep(100000);
+
 }
 
