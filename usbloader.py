@@ -1,9 +1,12 @@
 # Put stuff onto the CI20 (or any jz4780 -- or other?) board using USB.
 import optparse
 import time
+from collections import namedtuple
 
 import usb.core
 import usb.util
+
+from thirdparty.pyelftools.elftools.elf import elffile
 
 IDVENDOR  = 0xA108
 IDPRODUCT = 0x4780
@@ -19,6 +22,29 @@ BM_REQUEST_RECIPIENT_ENDPOINT  = 2 << 0
 BM_REQUEST_RECIPIENT_OTHER     = 3 << 0
 
 TIMEOUT = 1000
+
+LoadSegment = namedtuple('LoadSegment', ('data', 'address'))
+class LoadSegments:
+	def __init__(self, elf_filename):
+		self.load = [] # List of LoadSegments
+
+		with open(elf_filename, 'rb') as h:
+			elf = elffile.ELFFile(h)
+
+			for segment in elf.iter_segments():
+				if segment['p_type'] == 'PT_LOAD':
+					self.load.append(LoadSegment(data=segment.data(), address=segment['p_vaddr']))
+
+			self.entrypoint = elf['e_entry']
+	
+	def __getitem__(self, idx):
+		return self.load[idx]
+
+	def __len__(self):
+		return len(self.load)
+
+	def __repr__(self):
+		return '<LoadSegments; num=%d entry=%x>' % (len(self.load), self.entrypoint)
 
 class UsbLoader:
 	VR_GET_CPU_INFO     = 0
@@ -84,28 +110,23 @@ class UsbLoader:
 	def read_data(self, amount):
 		return self.dev.read(UsbLoader.ENDPOINT_DEVICE_TO_HOST, amount, TIMEOUT)
 
-	def boot_stage1(self, data, load_address, entrypoint):
-		assert isinstance(data, bytes)
+	def boot_stage1(self, loadsegments):
+		for segment in loadsegments:
+			self.set_data_address(segment.address)
+			self.send_data(segment.data)
 
-		self.set_data_address(load_address)
-		self.send_data(data)
 		self.flush_caches()
-		self.start1(entrypoint)
+		self.start1(loadsegments.entrypoint)
 
 def main():
 	parser = optparse.OptionParser()
-	parser.add_option('--load-address', type="int", default=JZ4780_TCSM_START)
-	parser.add_option('--entrypoint', type="int", default=JZ4780_TCSM_START)
 	opts, args = parser.parse_args()
 
-	stage1 = args[0]
-	# TODO stage 2
-
-	with open(stage1, 'rb') as h:
-		data = h.read()
+	elf_filename = args[0]
+	segments = LoadSegments(elf_filename)
 
 	loader = UsbLoader()
-	loader.boot_stage1(data, opts.load_address, opts.entrypoint)
+	loader.boot_stage1(segments)
 
 if __name__ == '__main__':
 	main()

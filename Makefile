@@ -12,7 +12,7 @@ obj = $(patsubst %,build/%,$(addsuffix .o,$(basename $(1))))
 
 # main targets
 .PHONY: os
-os: build/stage1.bin build/os.bin
+os: build/stage1.elf build/os.elf
 
 # 
 # Library common to stage1 and os proper
@@ -43,6 +43,8 @@ OS_SRC=src/start.S src/main.c
 build/os.elf: $(call obj,$(OS_SRC)) src/linker.lds build/libci20.a
 	$(LD) -T src/linker.lds -o $@ $(call obj,$(OS_SRC)) build/libci20.a
 
+# A recipe to convert ELF to raw memory images. These are no longer required
+# for USB loading.
 %.bin: %.elf
 	$(OBJCOPY) -O binary $< $@
 
