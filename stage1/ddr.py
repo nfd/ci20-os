@@ -582,11 +582,7 @@ def remap_memory(hardware, ram):
 
 	assert ram.ranks == 1 # Behaviour is slightly different for two ranks
 
-	def highest_bit(val):
-		""" Return the 0-indexed bit number of the highest bit needed to store
-		'val' distinct values. For example, you can store 8 distinct values in
-		3 bits, from bit 0 to bit 2, so highest_bit(8) == 2. """
-		return int(math.log2(val)) - 1
+	ilog2 = lambda val: int(math.log2(val))
 
 	# The normal organisation, where each bit is remapped to itself.  Note that
 	# the lower 12 bits are protected, so we can only change the upper 20.
@@ -596,15 +592,15 @@ def remap_memory(hardware, ram):
 	# number of bits which we need to represent the highest addressable value
 	# in the RAM, minus the number of bits we need to represent the highest
 	# addressable bank...
-	first_bank_bit = highest_bit(ram.size()) - highest_bit(ram.banks)
+	first_bank_bit = ilog2(ram.size()) - ilog2(ram.banks)
 	
 	#... except that the jz4780 doesn't let us mess with the lower 12 bits,
 	# so we have to pretend they don't exist.
 	first_bank_bit -= 12 # Lower 12 bits are protected.
 
 	# Now we can actually do the work: swap the bank bits with the lowest
-	# possible bits. Note we add 1 because Python ranges are half-open.
-	for new_bank_bit in range(highest_bit(ram.banks) + 1):
+	# possible bits.
+	for new_bank_bit in range(ilog2(ram.banks)):
 		old_bank_bit = first_bank_bit + new_bank_bit
 
 		bits_mapped[old_bank_bit], bits_mapped[new_bank_bit] = \
