@@ -249,6 +249,31 @@ REGISTERS = {'CPM.DRCG': {
 				'AREF': RegFlag(bit=3),
 				'SREF': RegFlag(bit=2),
 				'CKE0': RegFlag(bit=0)},
+			'DDR.DREMAP1': {
+				'BIT3MP': RegPart(shift=24, lim=28),
+				'BIT2MP': RegPart(shift=16, lim=20),
+				'BIT1MP': RegPart(shift=8, lim=12),
+				'BIT0MP': RegPart(shift=0, lim=4)},
+			'DDR.DREMAP2': {
+				'BIT7MP': RegPart(shift=24, lim=28),
+				'BIT6MP': RegPart(shift=16, lim=20),
+				'BIT5MP': RegPart(shift=8, lim=12),
+				'BIT4MP': RegPart(shift=0, lim=4)},
+			'DDR.DREMAP3': {
+				'BIT11MP': RegPart(shift=24, lim=28),
+				'BIT10MP': RegPart(shift=16, lim=20),
+				'BIT9MP': RegPart(shift=8, lim=12),
+				'BIT8MP': RegPart(shift=0, lim=4)},
+			'DDR.DREMAP4': {
+				'BIT15MP': RegPart(shift=24, lim=28),
+				'BIT14MP': RegPart(shift=16, lim=20),
+				'BIT13MP': RegPart(shift=8, lim=12),
+				'BIT12MP': RegPart(shift=0, lim=4)},
+			'DDR.DREMAP5': {
+				'BIT19MP': RegPart(shift=24, lim=28),
+				'BIT18MP': RegPart(shift=16, lim=20),
+				'BIT17MP': RegPart(shift=8, lim=12),
+				'BIT16MP': RegPart(shift=0, lim=4)},
 			'DDRP.DTAR': { # Parts are made up, could be wrong
 				'BANK': RegPart(shift=28, lim=31),
 				'ROW': RegPart(shift=12, lim=27),
@@ -404,7 +429,7 @@ class AutogenOutput:
 		return regval
 
 	def write_register(self, name, **kw):
-		comment = '\t/* %s <- %s */' % (name, ', '.join('%s:%s' % (key, val) for key, val in kw.items()))
+		comment = '\t/* %s <- %s */' % (name, ', '.join('%s:%s' % (key, val) for key, val in sorted(kw.items())))
 		print(comment)
 
 		for reg, name in self._reg_names(name):
@@ -541,6 +566,72 @@ def init_phy(hardware, ram):
 			PULLDOWN_IMPEDANCE=0xe,
 			ZDEN=1)
 
+def remap_memory(hardware, ram):
+	# We want to ensure that multiple banks are used frequently.  If the
+	# current memory access layout looks like this:
+	#
+	# (highest bit) (banks) (rows) (columns - protected) (lowest bit)
+	#
+	# ... we want to remap it so it looks like this:
+	#
+	# (highest bit) (rows) (banks) (columns - protected) (lowest bit)
+	#
+	# ... the idea being that memory access is faster when accesses are spread
+	# out across all the banks, and moving them to lower bits will help that
+	# process thanks to the principle of locality.
+
+	assert ram.ranks == 1 # Behaviour is slightly different for two ranks
+
+	def highest_bit(val):
+		""" Return the 0-indexed bit number of the highest bit needed to store
+		'val' distinct values. For example, you can store 8 distinct values in
+		3 bits, from bit 0 to bit 2, so highest_bit(8) == 2. """
+		return int(math.log2(val)) - 1
+
+	# The normal organisation, where each bit is remapped to itself.  Note that
+	# the lower 12 bits are protected, so we can only change the upper 20.
+	bits_mapped = {num: num for num in range(20)} 
+
+	# Find the highest bit of address space which will be used. This is the
+	# number of bits which we need to represent the highest addressable value
+	# in the RAM, minus the number of bits we need to represent the highest
+	# addressable bank...
+	first_bank_bit = highest_bit(ram.size()) - highest_bit(ram.banks)
+	
+	#... except that the jz4780 doesn't let us mess with the lower 12 bits,
+	# so we have to pretend they don't exist.
+	first_bank_bit -= 12 # Lower 12 bits are protected.
+
+	# Now we can actually do the work: swap the bank bits with the lowest
+	# possible bits. Note we add 1 because Python ranges are half-open.
+	for new_bank_bit in range(highest_bit(ram.banks) + 1):
+		old_bank_bit = first_bank_bit + new_bank_bit
+
+		bits_mapped[old_bank_bit], bits_mapped[new_bank_bit] = \
+				bits_mapped[new_bank_bit], bits_mapped[old_bank_bit]
+	
+	# TODO we actually end up only changing three registers with the above
+	# arrangement, so this is a little wasteful.
+	hardware.write_register('DDR.DREMAP1',
+			BIT3MP=bits_mapped[3], BIT2MP=bits_mapped[2],
+			BIT1MP=bits_mapped[1], BIT0MP=bits_mapped[0])
+
+	hardware.write_register('DDR.DREMAP2',
+			BIT7MP=bits_mapped[7], BIT6MP=bits_mapped[6],
+			BIT5MP=bits_mapped[5], BIT4MP=bits_mapped[4])
+
+	hardware.write_register('DDR.DREMAP3',
+			BIT11MP=bits_mapped[11], BIT10MP=bits_mapped[10],
+			BIT9MP=bits_mapped[9],   BIT8MP=bits_mapped[8])
+
+	hardware.write_register('DDR.DREMAP4',
+			BIT15MP=bits_mapped[15], BIT14MP=bits_mapped[14],
+			BIT13MP=bits_mapped[13], BIT12MP=bits_mapped[12])
+
+	hardware.write_register('DDR.DREMAP5',
+			BIT19MP=bits_mapped[19], BIT18MP=bits_mapped[18],
+			BIT17MP=bits_mapped[17], BIT16MP=bits_mapped[16])
+
 def init_ram(hardware, ram):
 	assert ram.bus_width_bits in (16, 32)
 	assert ram.banks in (4, 8)
@@ -660,7 +751,7 @@ def init_ram(hardware, ram):
 			CKE=1)
 
 	hardware.note('remap memory')
-	# TODO
+	remap_memory(hardware, ram)
 
 	hardware.note('clear status')
 	hardware.read_clear_write('DDR.DSTATUS', ('MISS',))
