@@ -34,11 +34,11 @@ class Span:
 		return self.ram.ns_to_ticks(self.ns) if not self.is_ticks else self.val
 
 class RAMInfo:
-	def __init__(self, name, ddr_speed_hz):
+	def __init__(self, name, ddr_speed_hz, follow_reference_code=True):
 		self.name = name
 		self.ddr_speed_hz = ddr_speed_hz
 		self.nCK = 1000000000/ddr_speed_hz # nanoseconds per DDR clock cycle.
-		self.follow_reference_code = True
+		self.follow_reference_code = follow_reference_code
 
 	def ns_to_ticks(self, ns):
 		return int(math.ceil(ns / self.nCK))
@@ -753,7 +753,8 @@ def init_ram(hardware, ram):
 	hardware.read_clear_write('DDR.DSTATUS', ('MISS',))
 
 def generate(output):
-	ram = RAMInfo('K4B2G0846Q-BYK0', 400000000) # Samsung 256Mx8 DDR3L-1600, 400MHz clock
+	# Samsung 256Mx8 DDR3L-1600, 400MHz clock
+	ram = RAMInfo('K4B2G0846Q-BYK0', 400000000, follow_reference_code=True) 
 	ram.tRTP = NS('max(4 * nCK, 7.5)')
 	ram.tWTR = NS('max(4 * nCK, 7.5)')
 	ram.tWR = NS(15)

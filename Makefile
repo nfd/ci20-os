@@ -4,7 +4,7 @@ CC=$(PREFIX)gcc
 LD=$(PREFIX)ld
 AR=$(PREFIX)ar
 OBJCOPY=$(PREFIX)objcopy
-CFLAGS=-mips32r2 -EL -Os -std=c99 -Wall -Werror -Iinclude
+CFLAGS=-mips32r2 -EL -Os -std=c99 -Wall -Werror -Iinclude -G0
 # TODO: also consider adding: -mno-fused-madd -msoft-float -ffreestanding -nostdlib -mno-abicalls
 #
 
@@ -17,7 +17,7 @@ os: build/stage1.elf build/os.elf
 # 
 # Library common to stage1 and os proper
 #
-LIBCI20_SRC=libci20/uart.c libci20/peekpoke.S libci20/pllclock.c libci20/timer.c
+LIBCI20_SRC=libci20/uart.c libci20/peekpoke.S libci20/pllclock.c libci20/timer.c libci20/init.c
 
 build/libci20.a: $(call obj,$(LIBCI20_SRC))
 	$(AR) rcs $@ $+

@@ -3,6 +3,7 @@
 #include "libci20/timer.h"
 #include "libci20/pllclock.h"
 #include "libci20/peekpoke.h"
+#include "libci20/init.h"
 #include "memtest.h"
 #include "ddr.h"
 
@@ -10,7 +11,7 @@ void ci20board_init();
 
 void entrypoint()
 {
-	uart_init();
+	libci20_init_baremetal();
 	uart_puts("Hi there\r\n");
 	
 	ci20board_init();
