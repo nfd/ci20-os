@@ -2,5 +2,5 @@
 *.elf
 *.o
 build/*
-__pycache__/*
+__pycache__
 thirdparty/pyelftools/*
