@@ -25,7 +25,7 @@ void entrypoint(void)
 		uint32_t prev = counter;
 
 		for(volatile uint32_t i = 0; i < 0xfffffff; i++)
-			; // 00000C3C ms, 0xc48 (but between 0xc45 and 0xc51) on linux
+			; 
 
 		uart_print("%x4\r\n", counter - prev);
 	}
