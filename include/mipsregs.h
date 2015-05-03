@@ -36,7 +36,11 @@
 
 #define CP0_STATUS $12
 #define CP0_CAUSE $13
+#define CP0_EPC $14
 #define CP0_CONFIG $16
 
 #define CACHE_MODE_CACHABLE_NONCOHERENT 3
+#define CP0_STATUS_CU_ALL 0xf0000000
+#define CP0_STATUS_IM_ALL 0xff00
+#define CP0_STATUS_IE 0x1
 

@@ -7,6 +7,7 @@
 
 /* Devices */
 #define CPM_BASE   0xb0000000
+#define INTC_BASE  0xb0001000
 #define GPIO_BASE  0xb0010000
 #define DDR_BASE   0xb3010000
 #define DDRP_BASE  0xb3011000
@@ -71,6 +72,18 @@
 
 /* Affects CLKGR1 */
 #define CLKGR1_UART4  (1 << 10)
+
+/* INTC - interrupt controller */
+#define INTC_ICSR0    (INTC_BASE + 0x0)
+#define INTC_ICMSR0   (INTC_BASE + 0x8)
+#define INTC_ICMCR0   (INTC_BASE + 0xC)
+#define INTC_ICPR0    (INTC_BASE + 0x10)
+#define INTC_ICSR1    (INTC_BASE + 0x20)
+#define INTC_ICPR1    (INTC_BASE + 0x30)
+
+#define INTC_ICMR0_TCU0 (1 << 27)
+#define INTC_ICMR0_TCU1 (1 << 26)
+#define INTC_ICMR0_TCU2 (1 << 25)
 
 /* Affects DDRCDR */
 #define DDRCDR_DCS_STOP    (0 << 30)

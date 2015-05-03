@@ -16,12 +16,9 @@ void entrypoint()
 	
 	ci20board_init();
 	pllclock_init();
-	os_timer_init();
+	spintimer_init();
 	ddr_init();
 
 	memtest();
-
-	usleep(100000);
-
 }
 

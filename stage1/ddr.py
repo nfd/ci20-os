@@ -453,7 +453,7 @@ class AutogenOutput:
 			print("\tread_clear_write(%s, 0x%08x);" % (name, mask))
 	
 	def delay_us(self, usec):
-		print('\tusleep(%d);' % (usec))
+		print('\tspintimer_usleep(%d);' % (usec))
 
 	def spin_until_contains(self, name, partnames):
 		reg = REGISTERS[name]

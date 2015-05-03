@@ -14,6 +14,8 @@ IDPRODUCT = 0x4780
 JZ4780_TCSM_START = 0xf4000800
 JZ4780_TCSM_END   = 0xf4004000
 
+TCSM_BANK_SIZE = 0x800
+
 BM_REQUEST_DEVICE_TO_HOST      = 1 << 7
 BM_REQUEST_TYPE_CLASS          = 1 << 5
 BM_REQUEST_TYPE_VENDOR         = 2 << 5
@@ -22,6 +24,14 @@ BM_REQUEST_RECIPIENT_ENDPOINT  = 2 << 0
 BM_REQUEST_RECIPIENT_OTHER     = 3 << 0
 
 TIMEOUT = 1000
+
+def pad_bytes(data, pad_length):
+	if len(data) % pad_length != 0:
+		data += b'0' * (pad_length - (len(data) % pad_length))
+	return data
+
+def address_in_tcsm(address):
+	return address >= JZ4780_TCSM_START and address < JZ4780_TCSM_END
 
 LoadSegment = namedtuple('LoadSegment', ('data', 'address'))
 class LoadSegments:
@@ -112,11 +122,19 @@ class UsbLoader:
 
 	def boot_stage1(self, loadsegments):
 		for segment in loadsegments:
+			data = segment.data
+
+			if address_in_tcsm(segment.address):
+				# Apparently the boot loader likes its data padded.
+				data = pad_bytes(data, TCSM_BANK_SIZE)
+
+			print("Writing from %08x to %08x" % (segment.address, segment.address + len(data)))
 			self.set_data_address(segment.address)
-			self.send_data(segment.data)
+			self.send_data(data)
 
 		self.flush_caches()
-		self.start1(loadsegments.entrypoint)
+		print("Executing at %08x" % (loadsegments.entrypoint))
+		self.start2(loadsegments.entrypoint)
 
 def main():
 	parser = optparse.OptionParser()

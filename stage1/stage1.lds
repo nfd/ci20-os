@@ -26,5 +26,18 @@ SECTIONS
 	.data : ALIGN(0x4) {
 		*(.data*)
 	} : stage1
+
+	/* BSS -- define symbols for it so it can be cleared by start.S */
+	__bss_start = .;
+	.sbss (NOLOAD) : {
+		*(.sbss .sbss*)
+		*(.scommon)
+	}
+
+	.bss (NOLOAD) : {
+		*(.bss .bss*)
+		*(COMMON)
+	}
+	__bss_end = .;
 }
 
