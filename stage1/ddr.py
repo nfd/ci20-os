@@ -1,3 +1,4 @@
+import sys
 import math
 import argparse
 from collections import namedtuple
@@ -401,14 +402,17 @@ void ddr_init(void)
 AUTOGEN_FOOTER = "}"
 
 class AutogenOutput:
+	def __init__(self, file=None):
+		self.file = file or sys.stdout
+
 	def begin(self):
-		print(AUTOGEN_HEADER)
+		print(AUTOGEN_HEADER, file=self.file)
 
 	def end(self):
-		print(AUTOGEN_FOOTER)
+		print(AUTOGEN_FOOTER, file=self.file)
 
 	def note(self, text):
-		print('\t/* %s */' % (text))
+		print('\t/* %s */' % (text), file=self.file)
 
 	def _reg_names(self, name):
 		reg = REGISTERS[name]
@@ -430,17 +434,17 @@ class AutogenOutput:
 
 	def write_register(self, name, **kw):
 		comment = '\t/* %s <- %s */' % (name, ', '.join('%s:%s' % (key, val) for key, val in sorted(kw.items())))
-		print(comment)
+		print(comment, file=self.file)
 
 		for reg, name in self._reg_names(name):
 			regval = self._calculate_write_val(reg, kw)
 
-			print("\tpoke32(%s, 0x%08x);" % (name, regval))
-		print()
+			print("\tpoke32(%s, 0x%08x);" % (name, regval), file=self.file)
+		print(file=self.file)
 	
 	def write_register_raw(self, name, val):
 		for reg, name in self._reg_names(name):
-			print("\tpoke32(%s, 0x%08x);" % (name, val))
+			print("\tpoke32(%s, 0x%08x);" % (name, val), file=self.file)
 
 	def read_clear_write(self, name, partnames):
 		for reg, name in self._reg_names(name):
@@ -450,10 +454,10 @@ class AutogenOutput:
 				regpart = reg[partname]
 				mask |= regpart.mask
 
-			print("\tread_clear_write(%s, 0x%08x);" % (name, mask))
+			print("\tread_clear_write(%s, 0x%08x);" % (name, mask), file=self.file)
 	
 	def delay_us(self, usec):
-		print('\tspintimer_usleep(%d);' % (usec))
+		print('\tspintimer_usleep(%d);' % (usec), file=self.file)
 
 	def spin_until_contains(self, name, partnames):
 		reg = REGISTERS[name]
@@ -463,7 +467,7 @@ class AutogenOutput:
 			regpart = reg[partname]
 			mask |= regpart.mask
 
-		print('\tspin_until(%s, 0x%08x);' % (name.replace('.', '_'), mask))
+		print('\tspin_until(%s, 0x%08x);' % (name.replace('.', '_'), mask), file=self.file)
 	
 	def read_update_write(self, name, preserve=None, **kw):
 		mask = 0
@@ -473,8 +477,8 @@ class AutogenOutput:
 
 		for reg, name in self._reg_names(name):
 			regval = self._calculate_write_val(reg, kw)
-			#print("/*%-12s <= (val & 0x%08x) | 0x%08x*/" % (name, mask, regval))
-			print("\tread_mask_update(%s, 0x%08x, 0x%08x);" % (name, mask, regval))
+			#print("/*%-12s <= (val & 0x%08x) | 0x%08x*/" % (name, mask, regval), file=self.file)
+			print("\tread_mask_update(%s, 0x%08x, 0x%08x);" % (name, mask, regval), file=self.file)
 
 def init_phy(hardware, ram):
 	assert ram.burst_length in (4, 8)
@@ -855,11 +859,35 @@ def decode(name, value):
 		part = reg[partname]
 		print(partname, part.decode(value))
 
+
+class OptionalFileContextManager:
+	def __init__(self, filename=None):
+		self.filename = filename
+		self.handle = sys.stdout if filename is None else None
+
+		self.must_close = False
+
+	def __enter__(self):
+		if self.handle is None:
+			self.handle = open(self.filename, 'w')
+			self.must_close = True
+		return self.handle
+
+	def __exit__(self, typ, value, tb):
+		if self.must_close:
+			self.handle.close()
+			self.handle = None
+			self.must_close = False
+		return False # don't swallow exception
+
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--decode', nargs='?', help='Decode a register in the form <name>=<value')
 	parser.add_argument('--verify', action='store_true')
+	parser.add_argument('--output', '-o', default=None, help='Output filename (stdout if not specified)')
 	args = parser.parse_args()
+
+	output_context = OptionalFileContextManager(filename=args.output)
 
 	if args.decode:
 		name, value = args.decode.split(',')
@@ -871,6 +899,7 @@ if __name__ == '__main__':
 		output = referenceddr.VerifyOutput(REGISTERS)
 		generate(output)
 	else:
-		output = AutogenOutput()
-		generate(output)
+		with output_context as handle:
+			output = AutogenOutput(file=handle)
+			generate(output)
 

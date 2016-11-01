@@ -1,6 +1,11 @@
 *.bin
 *.elf
 *.o
+*.a
 build/*
 __pycache__
 thirdparty/pyelftools/*
+Makefile
+CMakeCache.txt
+CMakeFiles
+cmake_install.cmake
