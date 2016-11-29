@@ -16,8 +16,17 @@ set(CMAKE_C_LINK_EXECUTABLE "${CMAKE_LD} <LINK_FLAGS> <OBJECTS> -o <TARGET> <LIN
 enable_language(ASM)
 set(can_use_assembler TRUE)
 
-add_subdirectory(libci20)
+#add_subdirectory(libci20)
+
 add_subdirectory(stage1)
+
+# TODO: ideally system/ci20 CMakeLists would include these (since it's a dependency of the system)
+add_subdirectory(architecture/mips32)
+add_subdirectory(soc/jz4780)
+add_subdirectory(driver/jz47xx-uart)
+add_subdirectory(driver/jz47xx-timer)
+
+add_subdirectory(system/ci20)
 add_subdirectory(kernel)
 
 

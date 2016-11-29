@@ -1,8 +1,7 @@
-#include "libci20/peekpoke.h"
 #include "ci20board.h"
-#include "libci20/uart.h"
-#include "libci20/timer.h"
-#include "libci20/init.h"
+#include "driver/jz47xx-uart/jz47xx-uart.h"
+#include "driver/jz47xx-timer/jz47xx-timer.h"
+#include "system/init.h"
 #include "inttypes.h"
 
 volatile uint32_t counter;
@@ -14,7 +13,9 @@ void counter_incrementer(void)
 
 void entrypoint(void)
 {
-	libci20_init_baremetal();
+	system_init();
+
+	// TODO move to system init?
 	ostimer_init();
 
 	uart_puts("Hello, world!\r\n");

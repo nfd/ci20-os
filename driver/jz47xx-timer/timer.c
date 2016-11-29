@@ -1,7 +1,7 @@
 #include "inttypes.h"
-#include "libci20/timer.h"
-#include "libci20/peekpoke.h"
-#include "libci20/interrupts.h"
+#include "driver/jz47xx-timer/jz47xx-timer.h"
+#include "architecture/peekpoke.h"
+#include "soc/jz4780/jz47xx-interrupts.h"
 #include "ci20board.h"
 #include "timer_internal.h"
 

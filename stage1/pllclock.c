@@ -23,7 +23,7 @@ not clear which of these reasons apply to the JZ4780.
 
 #include "inttypes.h"
 #include "ci20board.h"
-#include "libci20/peekpoke.h"
+#include "architecture/peekpoke.h"
 
 /* Board-specific settings */
 

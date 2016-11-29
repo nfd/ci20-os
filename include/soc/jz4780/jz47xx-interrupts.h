@@ -1,4 +1,4 @@
-#include "peekpoke.h"
+#include "architecture/peekpoke.h"
 #include "ci20board.h"
 
 typedef void(*irqhandler)(void);

@@ -1,8 +1,8 @@
 #include "inttypes.h"
-#include "libci20/timer.h"
-#include "libci20/peekpoke.h"
+#include "timer_basic.h"
+#include "architecture/peekpoke.h"
 #include "ci20board.h"
-#include "timer_internal.h"
+#include "../driver/jz47xx-timer/timer_internal.h"
 
 /*
  * Spin timer functions

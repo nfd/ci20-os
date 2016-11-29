@@ -1,6 +1,6 @@
-#include "libci20/interrupts.h"
-#include "libci20/uart.h"
 #include "inttypes.h"
+#include "soc/jz4780/jz47xx-interrupts.h"
+#include "driver/jz47xx-uart/jz47xx-uart.h"
 
 /* Interrupt dispatch table */
 #define IRQ_COUNT 64

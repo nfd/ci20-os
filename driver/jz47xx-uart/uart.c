@@ -1,7 +1,7 @@
 #include <stdarg.h>
 
-#include "libci20/uart.h"
-#include "libci20/peekpoke.h"
+#include "driver/jz47xx-uart/jz47xx-uart.h"
+#include "architecture/peekpoke.h"
 #include "ci20board.h"
 #include "inttypes.h"
 
