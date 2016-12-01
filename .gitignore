@@ -2,6 +2,7 @@
 *.elf
 *.o
 *.a
+.DS_Store
 build/*
 __pycache__
 thirdparty/pyelftools/*

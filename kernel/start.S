@@ -29,8 +29,9 @@ _exc_asm:
 	eret
 
 .org 0x200
+.set noat
 _irq_asm:
-	sw at, -4(sp)
+	sw _at, -4(sp)
 	sw v0, -8(sp)
 	sw v1, -12(sp)
 	sw a0, -16(sp)
@@ -65,7 +66,7 @@ _irq_asm:
 	nop
 
 	addi sp, sp, 112
-	lw at, -4(sp)
+	lw _at, -4(sp)
 	lw v0, -8(sp)
 	lw v1, -12(sp)
 	lw a0, -16(sp)
@@ -97,6 +98,7 @@ _irq_asm:
 	eret
 
 .org 0x1000
+.set at
 
 /* make it accessible outside */
 .globl _start

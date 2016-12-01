@@ -2,7 +2,7 @@
 /* See http://en.wikipedia.org/wiki/MIPS_instruction_set#Compiler_register_usage */
 
 #define zero $0
-#define at $1 /* assembly temporary */
+#define _at $1 /* assembly temporary */
 #define v0 $2 /* function return & expr eval */
 #define v1 $3
 #define a0 $4 /* function arguments */
