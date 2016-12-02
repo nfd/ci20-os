@@ -9,12 +9,12 @@ set(CMAKE_AR ${TOOLCHAIN_PREFIX}ar)
 set(CMAKE_LD ${TOOLCHAIN_PREFIX}ld)
 set(CMAKE_RANLIB ${TOOLCHAIN_PREFIX}ranlib)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mips32r2 -EL -O2 -std=c99 -Wall -Werror -Iinclude -G0")
-set(CMAKE_ASM_FLAGS ${CMAKE_C_FLAGS})
 
 set(CMAKE_C_LINK_EXECUTABLE "${CMAKE_LD} <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>")
 
 enable_language(ASM)
 set(can_use_assembler TRUE)
+set(CMAKE_ASM_FLAGS ${CMAKE_C_FLAGS})
 
 #add_subdirectory(libci20)
 
