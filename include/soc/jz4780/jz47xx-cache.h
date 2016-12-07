@@ -1,0 +1,5 @@
+/* TODO read this from cp0? */
+
+#define JZ4780_CACHE_LINE_SIZE 32
+#define JZ4780_CACHE_SIZE (1024 * JZ4780_CACHE_LINE_SIZE)
+

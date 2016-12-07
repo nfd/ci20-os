@@ -1,4 +1,4 @@
-add_executable(kernel.elf start.S main.c)
+add_executable(kernel.elf main.c)
 
 target_include_directories(kernel.elf PUBLIC ../include ../include/architecture/mips32)
 

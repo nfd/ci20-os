@@ -34,13 +34,32 @@
 #define fp $30 /* frame pointer */
 #define ra $31 /* return address */
 
+#define	CP0_TLB_PAGEMASK $5
 #define CP0_STATUS $12
 #define CP0_CAUSE $13
 #define CP0_EPC $14
 #define CP0_CONFIG $16
 
+#define CACHE_MODE_UNCACHED 2
 #define CACHE_MODE_CACHABLE_NONCOHERENT 3
+#define CACHE_MODE_CACHABLE_COHERENT_EXCLUSIVE 4
+#define CACHE_MODE_CACHABLE_COHERENT_EXCLUSIVE_WRITE 5
 #define CP0_STATUS_CU_ALL 0xf0000000
+#define CP0_STATUS_BEV (1 << 22)
+#define CP0_STATUS_SR (1 << 20)
 #define CP0_STATUS_IM_ALL 0xff00
 #define CP0_STATUS_IE 0x1
+
+#define CP0_CAUSE_IV (1 << 23)
+
+#define CP0_TAG_LO $28
+#define CP0_TAG_HI $29
+
+#define PAGE_SIZE 4096
+#define	KSEG0_START		0x80000000
+#define	KSEG1_START		0xA0000000
+
+#define CACHE_R4000_ICACHE 0
+#define CACHE_R4000_DCACHE 1
+#define	CACHE_R4000_INDEX_STORE_TAG	(2 << 2)
 

@@ -1,2 +1,2 @@
-void soc_jz4780_init(void);
+void soc_jz4780_init();
 

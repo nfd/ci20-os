@@ -123,6 +123,9 @@ class UsbLoader:
 	def boot_stage1(self, loadsegments):
 		for segment in loadsegments:
 			data = segment.data
+			if len(data) == 0:
+				# Zero-size section. Doesn't hurt anything, but why bother?
+				continue
 
 			if address_in_tcsm(segment.address):
 				# Apparently the boot loader likes its data padded.

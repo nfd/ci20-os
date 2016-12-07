@@ -7,8 +7,8 @@ SECTIONS
 	/* Our base address */
 	. = 0x80000000;
 
-	/* Code */
 	.text : {
+		*(.start)
 		*(.text)
 	}
 

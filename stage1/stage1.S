@@ -1,4 +1,4 @@
-#include "mipsregs.h"
+#include "architecture/mipsregs.h"
 #include "ci20board.h"
 
 /* USB Bootloader */

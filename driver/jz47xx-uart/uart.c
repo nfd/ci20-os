@@ -105,9 +105,8 @@ void uart_init(void)
 	/* Modem control: RTS */
 	uart_w(UMCR, UMCR_RTS); 
 
-	/* Enable FIFO and reset rx and tx, and enable the module (this last is
-	 * jz47xx-specific). */
-	uart_w(UFCR, UFCR_FME | UFCR_TFRT | UFCR_RFRT | UFCR_UME);
+	/* Enable FIFO and reset rx and tx */
+	uart_w(UFCR, UFCR_FME | UFCR_TFRT | UFCR_RFRT);
 
 	/* Enable banking and set the baud rate */
 	uart_w(ULCR, ULCR_DLAB | ULCR_WLS_8); 
@@ -116,6 +115,9 @@ void uart_init(void)
 
 	/* Disable banking again */
 	uart_w(ULCR, ULCR_WLS_8); 
+
+	/* Enable the module (jz4780-specific step) */
+	uart_w(UFCR, UFCR_FME | UFCR_TFRT | UFCR_RFRT | UFCR_UME);
 }
 
 void uart_putc(char c)

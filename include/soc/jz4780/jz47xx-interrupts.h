@@ -21,22 +21,22 @@ void intc_init(void);
 #define BANK(bank) (bank * 0x20)
 
 #define _intc_irq_is_set(name, bank, bit) \
-inline int intc_irq_is_set_ ## name(void) { \
+static inline int intc_irq_is_set_ ## name(void) { \
 	return (peek32(INTC_ICSR0 + BANK(bank)) & (1 << bit));\
 }
 
 #define _intc_irq_mask(name, bank, bit) \
-inline void intc_irq_mask_ ## name(void) { \
+static inline void intc_irq_mask_ ## name(void) { \
 	poke32(INTC_ICMSR0 + BANK(bank), (1 << bit)); \
 }
 
 #define _intc_irq_unmask(name, bank, bit) \
-inline void intc_irq_unmask_ ## name(void) { \
+static inline void intc_irq_unmask_ ## name(void) { \
 	poke32(INTC_ICMCR0 + BANK(bank), (1 << bit)); \
 }
 
 #define _intc_register_handler(name, bank, bit) \
-inline void intc_register_handler_ ## name(irqhandler handler) { \
+static inline void intc_register_handler_ ## name(irqhandler handler) { \
 	intc_register_handler_raw(bit + (bank * 0x20), handler); \
 }
 

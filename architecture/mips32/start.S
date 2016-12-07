@@ -1,28 +1,24 @@
-#include "mipsregs.h"
+#include "architecture/mipsregs.h"
+#include "architecture/kernelstack.h"
 
-/* Status: Exceptions in cached memory, enable coprocessor registers and all interrupts */
-#define CP0_STATUS_INITIALISER CP0_STATUS_CU_ALL | CP0_STATUS_IM_ALL | CP0_STATUS_IE
-
-/* Cause: Use special location (0x80000200) for IRQ exceptions */
-#define CP0_CAUSE_INITIALISER 0x800000
-
-/* Not having ".set noreorder" caused an entertaining bug in which my BSS-clearing routine
- * never ended. I had this:
- *    blt t0, t1, 1b    ; clear more data
- *    addiu t0, t0, 4   ; Increment counter in delay slot
- *
- * ... but the compiler converted it to this:
- * 
- *    blt t0, t1, 1b    ; clear more data
- *    nop
- *    addiu t0, t0, 4   ; in delay slot
- *
- * I spent a little while wondering why my kernel never booted!
-*/
+.section .start,"x"
 
 .set noreorder
 
-.text
+.org 0x0
+.globl multicore_entrypoint_asm_stub
+.ent multicore_entrypoint_asm_stub
+/* TODO: This is a little messy. The issue is that the multicore entrypoint on
+ * the jz4780 requires 64K alignment, and the most convenient place for that is
+ * right at the start of the kernel.
+*/
+
+multicore_entrypoint_asm_stub:
+	la t0, multicore_entrypoint_asm
+	jr t0
+	nop
+
+.end multicore_entrypoint_asm_stub
 
 .org 0x180
 _exc_asm:
@@ -100,24 +96,30 @@ _irq_asm:
 .org 0x1000
 .set at
 
-/* make it accessible outside */
 .globl _start
-/* Tell binutils it's a function */
 .ent _start
 
 _start:
-	li      t0, CP0_STATUS_INITIALISER
-	mtc0    t0, CP0_STATUS
-	nop
+	mfc0    t0, CP0_STATUS
 
-	li      t0, CP0_CAUSE_INITIALISER
+	/* Preserve BEV and SR (only) */
+	and     t0, CP0_STATUS_BEV | CP0_STATUS_SR
+
+	/* Enable all interrupts and coprocessors -- TODO! */
+	or      t0, (CP0_STATUS_IE | CP0_STATUS_IM_ALL | CP0_STATUS_CU_ALL)
+
+	mtc0    t0, CP0_STATUS
+	ehb
+
+	/* Use 80000200 for IRQ exceptions */
+	li      t0, CP0_CAUSE_IV
 	mtc0    t0, CP0_CAUSE
-	nop
+	ehb
 
 	/* Enable caching in kseg0 */
 	li      t0, CACHE_MODE_CACHABLE_NONCOHERENT
 	mtc0    t0, CP0_CONFIG
-	nop
+	ehb
 
 	/* Clear BSS */
 	la      t0, __bss_start
@@ -127,10 +129,11 @@ _start:
 	blt     t0, t1, 1b
 	addiu   t0, t0, 4    /* in delay slot */
 
-	/* Set up a stack at 256M-8M */
-	li sp, 0x8f800000
+	/* Set up a stack for the first core. */
+	la sp, kernel_stack
+	addiu sp, sp, KERNEL_STACK_SIZE
 
-	/* And jump to C */
+	/* Jump to C */
 	la t0, entrypoint
 	jr t0
 	nop
