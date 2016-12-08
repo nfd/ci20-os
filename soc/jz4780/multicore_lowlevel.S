@@ -33,6 +33,11 @@ multicore_entrypoint_asm:
 	mtc0    zero, CP0_TLB_PAGEMASK
 	ehb
 
+	/* Enable caching in kseg0 */
+	li      t0, CACHE_MODE_CACHABLE_NONCOHERENT
+	mtc0    t0, CP0_CONFIG
+	ehb
+
 	/* Set up a stack for this core -- TODO which we assume is the first one. */
 	la sp, kernel_stack
 	addiu sp, sp, KERNEL_STACK_SIZE   /* Top of stack for core 0 */
