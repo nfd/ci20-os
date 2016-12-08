@@ -102,8 +102,8 @@ _irq_asm:
 _start:
 	mfc0    t0, CP0_STATUS
 
-	/* Preserve BEV and SR (only) */
-	and     t0, CP0_STATUS_BEV | CP0_STATUS_SR
+	/* Preserve SR (only) */
+	and     t0, CP0_STATUS_SR
 
 	/* Enable all interrupts and coprocessors -- TODO! */
 	or      t0, (CP0_STATUS_IE | CP0_STATUS_IM_ALL | CP0_STATUS_CU_ALL)

@@ -15,7 +15,7 @@ void soc_jz4780_init()
 
 	intc_init();
 
-	// ostimer_init();
+	ostimer_init();
 
 	jz4780_enable_core1();
 }
