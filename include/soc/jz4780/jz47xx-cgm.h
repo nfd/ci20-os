@@ -36,6 +36,9 @@ XBURST_CGM_GATE_UNGATE(smb3, XBURST_CGM_CLKGR1, 0)
 	static inline void xburst_cgm_lpcr_ ## name ## _up() { \
 		MIPS_CLEAR_BIT(XBURST_CGM_LPCR, bit); \
 	}; \
+	static inline void xburst_cgm_lpcr_ ## name ## _down() { \
+		MIPS_SET_BIT(XBURST_CGM_LPCR, bit); \
+	}; \
 	static inline unsigned int xburst_cgm_lpcr_ ## name ## _is_down() { \
 		return (peek32(XBURST_CGM_LPCR) & (1 << bit)); \
 	};
