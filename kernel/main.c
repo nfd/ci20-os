@@ -10,7 +10,7 @@ volatile uint32_t counter = 0;
 
 void counter_incrementer(void)
 {
-	//counter++;
+	counter++;
 }
 
 void entrypoint(void)
@@ -18,13 +18,13 @@ void entrypoint(void)
 	system_init();
 	uart_puts("Hello, world!\r\n");
 
-	// ostimer_register_callback(counter_incrementer);
+	ostimer_register_callback(counter_incrementer);
 
-	for(int run = 0; run < 3; run++) {
+	for(int run = 0; run < 10; run++) {
 		for(volatile uint32_t i = 0; i < 0xfffffff; i++)
 			; 
 
-		uart_print("%x4\r\n", counter);
+		uart_print("1: %x4\r\n", counter);
 	}
 
 	while(1) {
@@ -40,14 +40,15 @@ void multicore_entrypoint(void)
 {
 	uart_puts("Hello, multicore world!\r\n");
 
-	while(1) {
-		counter++;
+	for(int run = 0; run < 10; run++) {
+		for(volatile uint32_t i = 0; i < 0xfffffff; i++)
+			; 
+
+		uart_print("2: %x4\r\n", counter);
 	}
 
-	/*
 	while(1) {
 		__asm__("wait");
 	}
-	*/
 }
 
