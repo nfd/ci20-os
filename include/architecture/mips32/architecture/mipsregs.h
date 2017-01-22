@@ -1,65 +1,42 @@
 /* MIPS register definitions, O32 ABI */
 /* See http://en.wikipedia.org/wiki/MIPS_instruction_set#Compiler_register_usage */
 
-#define zero $0
-#define _at $1 /* assembly temporary */
-#define v0 $2 /* function return & expr eval */
-#define v1 $3
-#define a0 $4 /* function arguments */
-#define a1 $5
-#define a2 $6
-#define a3 $7
-#define t0 $8  /* temporary values */
-#define t1 $9
-#define t2 $10
-#define t3 $11
-#define t4 $12
-#define t5 $13
-#define t6 $14
-#define t7 $15
-#define s0 $16 /* callee-preserved temporary values */
-#define s1 $17
-#define s2 $18
-#define s3 $19
-#define s4 $20
-#define s5 $21
-#define s6 $22
-#define s7 $23
-#define t8 $24 /* more temporary values */
-#define t9 $25
-#define k0 $26 /* kernel only */
-#define k1 $27
-#define gp $28 /* global pointer */
-#define sp $29 /* stack pointer */
-#define fp $30 /* frame pointer */
-#define ra $31 /* return address */
+#if __ASSEMBLER__ == 1
+#define DOLLAR(x) $x
+#else
+#define DOLLAR(x) x
+#endif
 
-#define	CP0_TLB_PAGEMASK $5
-#define CP0_STATUS $12
-#define CP0_CAUSE $13
-#define CP0_EPC $14
-#define CP0_CONFIG $16
-
-#define CACHE_MODE_UNCACHED 2
-#define CACHE_MODE_CACHABLE_NONCOHERENT 3
-#define CACHE_MODE_CACHABLE_COHERENT_EXCLUSIVE 4
-#define CACHE_MODE_CACHABLE_COHERENT_EXCLUSIVE_WRITE 5
-#define CP0_STATUS_CU_ALL 0xf0000000
-#define CP0_STATUS_BEV (1 << 22)
-#define CP0_STATUS_SR (1 << 20)
-#define CP0_STATUS_IM_ALL 0xff00
-#define CP0_STATUS_IE 0x1
-
-#define CP0_CAUSE_IV (1 << 23)
-
-#define CP0_TAG_LO $28
-#define CP0_TAG_HI $29
-
-#define PAGE_SIZE 4096
-#define	KSEG0_START		0x80000000
-#define	KSEG1_START		0xA0000000
-
-#define CACHE_R4000_ICACHE 0
-#define CACHE_R4000_DCACHE 1
-#define	CACHE_R4000_INDEX_STORE_TAG	(2 << 2)
+#define zero DOLLAR(0)
+#define _at DOLLAR(1) /* assembly temporary */
+#define v0 DOLLAR(2) /* function return & expr eval */
+#define v1 DOLLAR(3)
+#define a0 DOLLAR(4) /* function arguments */
+#define a1 DOLLAR(5)
+#define a2 DOLLAR(6)
+#define a3 DOLLAR(7)
+#define t0 DOLLAR(8)
+#define t1 DOLLAR(9)
+#define t2 DOLLAR(10)
+#define t3 DOLLAR(11)
+#define t4 DOLLAR(12)
+#define t5 DOLLAR(13)
+#define t6 DOLLAR(14)
+#define t7 DOLLAR(15)
+#define s0 DOLLAR(16) /* callee-preserved temporary values */
+#define s1 DOLLAR(17)
+#define s2 DOLLAR(18)
+#define s3 DOLLAR(19)
+#define s4 DOLLAR(20)
+#define s5 DOLLAR(21)
+#define s6 DOLLAR(22)
+#define s7 DOLLAR(23)
+#define t8 DOLLAR(24) /* more temporary values */
+#define t9 DOLLAR(25)
+#define k0 DOLLAR(26) /* kernel only */
+#define k1 DOLLAR(27)
+#define gp DOLLAR(28) /* global pointer */
+#define sp DOLLAR(29) /* stack pointer */
+#define fp DOLLAR(30) /* frame pointer */
+#define ra DOLLAR(31) /* return address */
 

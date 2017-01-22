@@ -21,9 +21,9 @@ reduce jitter, or because the PLL only works with an M of a certain range. It's
 not clear which of these reasons apply to the JZ4780.
 */
 
-#include "inttypes.h"
-#include "ci20board.h"
-#include "architecture/peekpoke.h"
+#include <inttypes.h>
+#include <kernel/ci20board.h>
+#include <architecture/peekpoke.h>
 
 /* Board-specific settings */
 

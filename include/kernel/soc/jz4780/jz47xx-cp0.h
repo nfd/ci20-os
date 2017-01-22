@@ -1,4 +1,4 @@
-#ifndef ASM
+#ifndef __ASSEMBLER__
 #include "architecture/cpufunc.h"
 #endif
 
@@ -18,16 +18,25 @@
 
 #define CP0_CORE_REIM $12, 4
 #define CP0_CORE_REIM_ENTRY_MASK 0xFFFF0000
+#define CP0_CORE_REIM_IRQ1_M (1 << 9)
+#define CP0_CORE_REIM_IRQ0_M (1 << 8)
 #define CP0_CORE_REIM_MIRQ1_M (1 << 1)
 #define CP0_CORE_REIM_MIRQ0_M (1 << 0)
 
-#define CP0_CORE_MBOX0 $20, 0
-#define CP0_CORE_MBOX1 $20, 1
+#define CP0_EBASE $15, 1
+#define CP0_EBASE_CORE_MASK 3
 
-#ifndef ASM
+#define CP0_CONFIG7 $16, 7
+#define CP0_CONFIG7_BTB_INVALIDATE (1 << 1)
+
+#define CP0_MBOX0 $20, 0
+#define CP0_MBOX1 $20, 1
+
+#ifndef __ASSEMBLER__
 MIPS_CP0_OPS(xburst_core_ctl,12,2)
 MIPS_CP0_OPS(xburst_core_status,12,3)
 MIPS_CP0_OPS(xburst_core_reim,12,4)
+MIPS_CP0_OPS(xburst_ebase,15,1)
 #endif
 
 /* jz47xx hardware interrupts */

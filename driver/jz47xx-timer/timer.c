@@ -1,9 +1,10 @@
-#include "inttypes.h"
-#include "driver/jz47xx-timer/jz47xx-timer.h"
-#include "driver/jz47xx-uart/jz47xx-uart.h"
-#include "architecture/peekpoke.h"
-#include "soc/jz4780/jz47xx-interrupts.h"
-#include "ci20board.h"
+#include <inttypes.h>
+#include <kernel/driver/jz47xx-timer/jz47xx-timer.h>
+#include <kernel/driver/jz47xx-uart/jz47xx-uart.h>
+#include <architecture/peekpoke.h>
+#include <kernel/soc/jz4780/jz47xx-interrupts.h>
+#include <kernel/ci20board.h>
+
 #include "timer_internal.h"
 
 #define MAX_TIMER_CALLBACKS 4

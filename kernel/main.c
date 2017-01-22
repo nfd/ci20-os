@@ -1,10 +1,9 @@
-#include "ci20board.h"
-#include "driver/jz47xx-uart/jz47xx-uart.h"
-#include "driver/jz47xx-timer/jz47xx-timer.h"
-#include "system/init.h"
-#include "inttypes.h"
-#include "ci20board.h"
-#include "architecture/peekpoke.h"
+#include <kernel/driver/jz47xx-uart/jz47xx-uart.h>
+#include <kernel/driver/jz47xx-timer/jz47xx-timer.h>
+#include <kernel/system/init.h>
+#include <architecture/userstate.h>
+
+#include "sigma0_interface.h"
 
 volatile uint32_t counter = 0;
 
@@ -13,42 +12,31 @@ void counter_incrementer(void)
 	counter++;
 }
 
-void entrypoint(void)
+struct architecture_userstate current;
+
+/* Entrypoint for all cores after the system has started */
+void common_entrypoint(void)
 {
-	system_init();
-	uart_puts("Hello, world!\r\n");
+	int val;
 
-	ostimer_register_callback(counter_incrementer);
+	uart_print("Hello, world! %x4 \r\n", &val);
+	for(volatile int i = 0; i < 0xffffff; i++)
+		;
 
-	for(int run = 0; run < 10; run++) {
-		for(volatile uint32_t i = 0; i < 0xfffffff; i++)
-			; 
+	jump_to_sigma0();
 
-		uart_print("1: %x4\r\n", counter);
-	}
-
+	/* Should never get here */
 	while(1) {
 		__asm__("wait");
 	}
 }
 
-
-/* Potentially misleading name: this is the entrypoint for cores OTHER THAN
- * CORE 0, which have been started by core 0 during the kernel initialisation
- * process. */
-void multicore_entrypoint(void)
+/* Entrypoint for the first core (on system startup). */
+void unicore_entrypoint(void)
 {
-	uart_puts("Hello, multicore world!\r\n");
+	system_init();
+	//ostimer_register_callback(counter_incrementer);
 
-	for(int run = 0; run < 10; run++) {
-		for(volatile uint32_t i = 0; i < 0xfffffff; i++)
-			; 
-
-		uart_print("2: %x4\r\n", counter);
-	}
-
-	while(1) {
-		__asm__("wait");
-	}
+	common_entrypoint();
 }
 

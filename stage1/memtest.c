@@ -1,7 +1,7 @@
 #include "memtest.h"
-#include "inttypes.h"
-#include "driver/jz47xx-uart/jz47xx-uart.h"
-#include "driver/jz47xx-timer/jz47xx-timer.h"
+#include <inttypes.h>
+#include <kernel/driver/jz47xx-uart/jz47xx-uart.h>
+#include <kernel/driver/jz47xx-timer/jz47xx-timer.h>
 
 #define MEM_START 0x80000000
 #define MEM_END   (MEM_START + (32*1024*1024)) /* Just test a small part, for speed */

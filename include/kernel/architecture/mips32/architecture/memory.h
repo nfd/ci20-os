@@ -1,0 +1,8 @@
+#define PAGE_SIZE 		4096
+#define	KSEG0_START		0x80000000
+#define	KSEG1_START		0xA0000000
+
+#define KSEG0_TO_BUS(x) (x - (KSEG0_START))
+#define ADDR_TO_KSEG0(x) (x | KSEG0_START)
+#define ADDR_TO_KSEG1(x) (x | KSEG1_START)
+

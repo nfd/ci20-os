@@ -1,10 +1,10 @@
-#include "inttypes.h"
-#include "architecture/peekpoke.h"
+#include <inttypes.h>
+#include <architecture/peekpoke.h>
 
-#include "driver/jz47xx-uart/jz47xx-uart.h"
-#include "driver/jz47xx-timer/jz47xx-timer.h"
+#include <kernel/driver/jz47xx-uart/jz47xx-uart.h>
+#include <kernel/driver/jz47xx-timer/jz47xx-timer.h>
 
-#include "soc/jz4780/jz47xx-interrupts.h"
+#include <kernel/soc/jz4780/jz47xx-interrupts.h>
 
 void jz4780_enable_core1();
 
@@ -15,7 +15,7 @@ void soc_jz4780_init()
 
 	intc_init();
 
-	ostimer_init();
+	//ostimer_init();
 
 	jz4780_enable_core1();
 }

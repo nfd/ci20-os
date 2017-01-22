@@ -1,9 +1,9 @@
 #include <stdarg.h>
 
-#include "driver/jz47xx-uart/jz47xx-uart.h"
-#include "architecture/peekpoke.h"
-#include "ci20board.h"
-#include "inttypes.h"
+#include <kernel/driver/jz47xx-uart/jz47xx-uart.h>
+#include <architecture/peekpoke.h>
+#include <kernel/ci20board.h>
+#include <inttypes.h>
 
 #define UART_BASE 0xb0030000
 
@@ -149,6 +149,12 @@ static void _puthex(int val)
 	} else {
 		uart_putc('A' + val - 10);
 	}
+}
+
+void uart_puthex8(uint8_t val)
+{
+	_puthex(val >> 4);
+	_puthex(val & 0xf);
 }
 
 void uart_puthex32(uint32_t val)

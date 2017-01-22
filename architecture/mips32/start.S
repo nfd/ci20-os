@@ -1,105 +1,166 @@
 #include "architecture/mipsregs.h"
+#include "architecture/cp0.h"
+#include "architecture/cache.h"
 #include "architecture/kernelstack.h"
 
 .section .start,"x"
 
 .set noreorder
 
-.org 0x0
-.globl multicore_entrypoint_asm_stub
-.ent multicore_entrypoint_asm_stub
-/* TODO: This is a little messy. The issue is that the multicore entrypoint on
- * the jz4780 requires 64K alignment, and the most convenient place for that is
- * right at the start of the kernel.
-*/
+.macro saveregisters
+	sw _at, 0(k0)
+	sw v0, 4(k0)
+	sw v1, 8(k0)
+	sw a0, 12(k0)
+	sw a1, 16(k0)
+	sw a2, 20(k0)
+	sw a3, 24(k0)
+	sw t0, 28(k0)
+	sw t1, 32(k0)
+	sw t2, 36(k0)
+	sw t3, 40(k0)
+	sw t4, 44(k0)
+	sw t5, 48(k0)
+	sw t6, 52(k0)
+	sw t7, 56(k0)
+	sw s0, 60(k0)
+	sw s1, 64(k0)
+	sw s2, 68(k0)
+	sw s3, 72(k0)
+	sw s4, 76(k0)
+	sw s5, 80(k0)
+	sw s6, 84(k0)
+	sw s7, 88(k0)
+	sw t8, 92(k0)
+	sw t9, 96(k0)
+	sw gp, 100(k0)
+	sw fp, 104(k0)
+	sw ra, 108(k0)
+	sw sp, 112(k0)
 
-multicore_entrypoint_asm_stub:
-	la t0, multicore_entrypoint_asm
-	jr t0
+.endm
+
+.macro saveregisters_exc
+	mfc0 t0, CP0_EPC
+	sw t0, 116(k0)
+.endm
+
+.macro restoreregisters
+	lw _at, 0(k0)
+	lw v0, 4(k0)
+	lw v1, 8(k0)
+	lw a0, 12(k0)
+	lw a1, 16(k0)
+	lw a2, 20(k0)
+	lw a3, 24(k0)
+	lw t0, 28(k0)
+	lw t1, 32(k0)
+	lw t2, 36(k0)
+	lw t3, 40(k0)
+	lw t4, 44(k0)
+	lw t5, 48(k0)
+	lw t6, 52(k0)
+	lw t7, 56(k0)
+	lw s0, 60(k0)
+	lw s1, 64(k0)
+	lw s2, 68(k0)
+	lw s3, 72(k0)
+	lw s4, 76(k0)
+	lw s5, 80(k0)
+	lw s6, 84(k0)
+	lw s7, 88(k0)
+	lw t8, 92(k0)
+	lw t9, 96(k0)
+	lw gp, 100(k0)
+	lw fp, 104(k0)
+	lw ra, 108(k0)
+	lw sp, 112(k0)
+.endm
+
+.macro restoreregisters_exc
+	lw t0, 116(k0)
+	mtc0 t0, CP0_EPC
+.endm
+
+/* We use ... 01 1111 i.e. cache=3, dirty=1, valid=1, global=1 */
+#define ENTRYLO_DIRECT_MAP_TEMPLATE 0x1f
+
+.org 0x0
+.set noreorder
+.set noat
+_exc_tlb_refill:
+	/* Directly map userspace to page frames */
+	mfc0 k0, CP0_BADVADDR
+
+	/* k0 will become entrylo -- mask off everything below the frame */
+	srl k0, k0, 12
+	move k1, k0
+
+	/* ... move into the right place for entrylo. */
+	sll k0, k0, 6
+	/* ... and mask in our default ENTRYLO setup */
+	ori k0, k0, ENTRYLO_DIRECT_MAP_TEMPLATE
+
+	mtc0 k0, CP0_ENTRYLO0
+	/* Prepare entrylo1 */
+	addi k1, k1, 1 /* next page */
+	sll k1, k1, 6
+	ori k1, k1, ENTRYLO_DIRECT_MAP_TEMPLATE
+	mtc0 k1, CP0_ENTRYLO1
 	nop
 
-.end multicore_entrypoint_asm_stub
+	tlbwr
+	nop
+
+	eret
+	nop
 
 .org 0x180
 _exc_asm:
-	eret
-
-.org 0x200
-.set noat
-_irq_asm:
-	sw _at, -4(sp)
-	sw v0, -8(sp)
-	sw v1, -12(sp)
-	sw a0, -16(sp)
-	sw a1, -20(sp)
-	sw a2, -24(sp)
-	sw a3, -28(sp)
-	sw t0, -32(sp)
-	sw t1, -36(sp)
-	sw t2, -40(sp)
-	sw t3, -44(sp)
-	sw t4, -48(sp)
-	sw t5, -52(sp)
-	sw t6, -56(sp)
-	sw t7, -60(sp)
-	sw s0, -64(sp)
-	sw s1, -68(sp)
-	sw s2, -72(sp)
-	sw s3, -76(sp)
-	sw s4, -80(sp)
-	sw s5, -84(sp)
-	sw s6, -88(sp)
-	sw s7, -92(sp)
-	sw t8, -96(sp)
-	sw t9, -100(sp)
-	sw gp, -104(sp)
-	sw fp, -108(sp)
-	sw ra, -112(sp)
-
-	addi sp, sp, -112
-
-	jal libci20_interrupt
+	j _exc_asm_continue
 	nop
 
-	addi sp, sp, 112
-	lw _at, -4(sp)
-	lw v0, -8(sp)
-	lw v1, -12(sp)
-	lw a0, -16(sp)
-	lw a1, -20(sp)
-	lw a2, -24(sp)
-	lw a3, -28(sp)
-	lw t0, -32(sp)
-	lw t1, -36(sp)
-	lw t2, -40(sp)
-	lw t3, -44(sp)
-	lw t4, -48(sp)
-	lw t5, -52(sp)
-	lw t6, -56(sp)
-	lw t7, -60(sp)
-	lw s0, -64(sp)
-	lw s1, -68(sp)
-	lw s2, -72(sp)
-	lw s3, -76(sp)
-	lw s4, -80(sp)
-	lw s5, -84(sp)
-	lw s6, -88(sp)
-	lw s7, -92(sp)
-	lw t8, -96(sp)
-	lw t9, -100(sp)
-	lw gp, -104(sp)
-	lw fp, -108(sp)
-	lw ra, -112(sp)
+.org 0x200
+_irq_asm:
+	la k0, current
+	saveregisters
+
+	la sp, kernel_stack
+	jal libci20_interrupt
+	addi sp, sp, KERNEL_STACK_SIZE - 4 /* in delay slot */
+
+	la k0, current
+	restoreregisters
 
 	eret
+	nop
 
-.org 0x1000
+_exc_asm_continue:
+	la k0, current
+	saveregisters
+	saveregisters_exc
+
+	la sp, kernel_stack
+
+	addi sp, sp, KERNEL_STACK_SIZE - 4
+	mfc0 a3, CP0_CAUSE
+
+	jal mips_exception
+	nop
+
+	la k0, current
+	restoreregisters
+	restoreregisters_exc
+
+	eret
+	nop
+
 .set at
 
-.globl _start
-.ent _start
-
-_start:
+/* Initialisation common to both initial core and multicore, called from unicore and multicore entrypoints */
+.globl _common_start
+.ent _common_start
+_common_start:
 	mfc0    t0, CP0_STATUS
 
 	/* Preserve SR (only) */
@@ -119,7 +180,22 @@ _start:
 	/* Enable caching in kseg0 */
 	li      t0, CACHE_MODE_CACHABLE_NONCOHERENT
 	mtc0    t0, CP0_CONFIG
+	nop
+
+	/* 4k pages */
+	mtc0    zero, CP0_TLB_PAGEMASK
 	ehb
+
+	jr ra
+	nop
+.end _common_start
+
+.globl _unicore_entrypoint_asm
+.ent _unicore_entrypoint_asm
+
+_unicore_entrypoint_asm:
+	jal _common_start
+	nop
 
 	/* Clear BSS */
 	la      t0, __bss_start
@@ -134,9 +210,15 @@ _start:
 	addiu sp, sp, KERNEL_STACK_SIZE
 
 	/* Jump to C */
-	la t0, entrypoint
+	la t0, unicore_entrypoint
 	jr t0
 	nop
+1:
+	wait /* should never get here */
+	j 1b
+	nop
 
-.end _start
+.end _unicore_entrypoint_asm
+
+.set reorder
 

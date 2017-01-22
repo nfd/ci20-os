@@ -370,8 +370,8 @@ AUTOGEN_HEADER = """\
  * See ddr.py for details.
 */
 
-#include "architecture/peekpoke.h"
-#include "ci20board.h"
+#include <architecture/peekpoke.h>
+#include <kernel/ci20board.h>
 #include "../timer_basic.h"
 
 static void read_clear_write(uint32_t addr, uint32_t mask)
@@ -721,6 +721,8 @@ def init_ram(hardware, ram):
 	# Mapping memory is strange: the reference code attempts to ensure that there
 	# is always memory available at 0x20000000 (=512MB) physical. We just assume
 	# that we always have just the one 1GB rank, however.
+	# TODO: Likely because bus addresses 0x10000000..0x1fffffff map to devices? We
+	# need to skip them in ram mappings or we're making 256MB of RAM inaccessible.
 	assert ram.ranks == 1 and ram.size(rank=1) > 512 * 1024 * 1024
 	# Map rank 0 at paddr 0
 	# Note: This is very weird: the reference code multiplies size by 2 here when
