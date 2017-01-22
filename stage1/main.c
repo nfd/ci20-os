@@ -1,5 +1,5 @@
 #include <kernel/driver/jz47xx-uart/jz47xx-uart.h>
-#include <kernel/ci20board.h>
+#include <system/board.h>
 #include <architecture/peekpoke.h>
 
 #include "timer_basic.h"

@@ -1,10 +1,3 @@
-#define EXTCLK 48000000 /* 48 MHz external clock driving the serial line */
-
-/* CPU and DDR will be configured to use the same clock, so CPU speed divided
- * by DDR speed must be an integer. */
-#define CPU_SPEED_HZ     1200000000 /* 1.2 GHz */
-#define DDR_SPEED_HZ      400000000 /* 400 MHz */
-
 /* Devices */
 #define CPM_BASE   0xb0000000
 #define INTC_BASE  0xb0001000
@@ -180,11 +173,4 @@
 #define GPIO_PEC    0x78
 
 #define GPIO(bank, name) (GPIO_BASE + (GPIO_BANK_##bank + GPIO_##name))
-
-/* Pin names: GPIO bank C, mode 2 */
-#define PIN_UART4_TXD (1 << 10)
-#define PIN_UART4_RXD (1 << 20)
-
-/* Pin names: GPIO bank F */
-#define PIN_LED_PIN   (1 << 15)
 

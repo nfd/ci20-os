@@ -117,13 +117,3 @@
 #define OSTCSR_RTC_EN         (1 << 1)  /* Use RTCCLK as clock source */
 #define OSTCSR_PCK_EN         (1 << 0)  /* Use PCLK as clock source */
 
-/* We prescale the OS timer by 16, which, with a 48MHz EXTCLK, means our OS
- * timer increments 3000000 times a second.
-*/
-
-#define OS_TIMER_HZ (EXTCLK / 16)
-
-/* Multiply a value in usec by this to get the number of ticks to wait for
- * the desired amount of usecs. For this to be at all meaningful, OS_TIMER_HZ
- * must be an integer multiple of 1000000. */
-#define OS_TIMER_USEC_DIV (OS_TIMER_HZ / 1000000)

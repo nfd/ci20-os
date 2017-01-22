@@ -1,5 +1,5 @@
-#include "inttypes.h"
-#include "kernel/ci20board.h"
+#include <inttypes.h>
+#include <kernel/soc/jz4780/jz47xx-devices.h>
 
 void uart_init(void);
 void uart_putc(char c);

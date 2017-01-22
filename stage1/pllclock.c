@@ -22,7 +22,8 @@ not clear which of these reasons apply to the JZ4780.
 */
 
 #include <inttypes.h>
-#include <kernel/ci20board.h>
+#include <kernel/soc/jz4780/jz47xx-devices.h>
+#include <system/board.h>
 #include <architecture/peekpoke.h>
 
 /* Board-specific settings */

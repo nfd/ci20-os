@@ -371,7 +371,7 @@ AUTOGEN_HEADER = """\
 */
 
 #include <architecture/peekpoke.h>
-#include <kernel/ci20board.h>
+#include <kernel/soc/jz4780/jz47xx-devices.h>
 #include "../timer_basic.h"
 
 static void read_clear_write(uint32_t addr, uint32_t mask)

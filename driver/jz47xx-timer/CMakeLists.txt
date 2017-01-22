@@ -3,4 +3,4 @@ add_library(jz47xx-timer STATIC timer.c)
 # TODO pass arch from main
 target_include_directories(jz47xx-timer PUBLIC ../../include ../../include/kernel/architecture/mips32)
 
-target_link_libraries(jz47xx-timer PUBLIC architecture)
+target_link_libraries(jz47xx-timer PUBLIC architecture system)

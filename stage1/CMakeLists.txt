@@ -9,7 +9,7 @@ add_custom_command(OUTPUT ${DDR_C_GENERATED}
 
 add_executable(stage1.elf stage1.S pllclock.c timer_basic.c main.c memtest.c ../driver/jz47xx-uart/uart.c ${DDR_C_GENERATED})
 
-target_include_directories(stage1.elf PUBLIC ../include ../include/kernel/architecture/mips32 ../include/architecture/mips32)
+target_include_directories(stage1.elf PUBLIC ../include ../include/kernel/architecture/mips32 ../include/architecture/mips32 ../include/kernel/system/ci20/include)
 
 set_target_properties(stage1.elf PROPERTIES
 	LINK_DEPENDS stage1/stage1.lds

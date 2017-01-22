@@ -1,5 +1,5 @@
 #include <architecture/peekpoke.h>
-#include <kernel/ci20board.h>
+#include <kernel/soc/jz4780/jz47xx-devices.h>
 
 typedef void(*irqhandler)(void);
 

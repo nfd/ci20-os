@@ -1,7 +1,6 @@
 #include <architecture/mipsregs.h>
 #include <architecture/cp0.h>
 #include <architecture/cache.h>
-#include <kernel/ci20board.h>
 
 /* USB Bootloader */
 

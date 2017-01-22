@@ -2,7 +2,8 @@
 
 #include <kernel/driver/jz47xx-uart/jz47xx-uart.h>
 #include <architecture/peekpoke.h>
-#include <kernel/ci20board.h>
+#include <kernel/soc/jz4780/jz47xx-devices.h>
+#include <system/board.h>
 #include <inttypes.h>
 
 #define UART_BASE 0xb0030000
