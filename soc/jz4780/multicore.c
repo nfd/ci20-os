@@ -15,9 +15,8 @@
 extern struct architecture_memory_layout kernel_memory_layout;
 
 void multicore_entrypoint_asm(void);
-void multicore_entrypoint_asm_end(void);
+extern uint32_t multicore_entrypoint_asm_length;
 
-#define JZ4780_MULTICORE_ENTRY_LENGTH ((uint8_t *)(&multicore_entrypoint_asm_end) - (uint8_t *)(&multicore_entrypoint_asm)) 
 #define JZ4780_TCSM_ALIGN 0x10000
 
 void jz4780_enable_core1()
@@ -33,7 +32,7 @@ void jz4780_enable_core1()
 	entry_dest = ADDR_TO_KSEG1(entry_dest);
 
 	/* Copy the entrypoint. No need to flush after write because we're writting to uncached memory. */
-	memcpy((uint8_t *)entry_dest, (uint8_t *)&multicore_entrypoint_asm, JZ4780_MULTICORE_ENTRY_LENGTH);
+	memcpy((uint8_t *)entry_dest, (uint8_t *)&multicore_entrypoint_asm, multicore_entrypoint_asm_length);
 
 	/* Ungate CORE1's clock. CORE1 is the name used in the CPU section of the
 	 * JZ4780 PM, but, confusingly, it's named both P1 and SCPU elsewhere
@@ -68,7 +67,6 @@ void jz4780_enable_core1()
 		;
 
 	// Start the core.
-	uart_print("About to start core 1 with dest %x4 length %x4\r\n", entry_dest, JZ4780_MULTICORE_ENTRY_LENGTH);
 	core_ctl &= ~(CP0_CORE_CTL_SW_RST1);
 	mips_write_cp0_xburst_core_ctl(core_ctl);
 }

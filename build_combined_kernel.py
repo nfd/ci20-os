@@ -10,6 +10,11 @@ OBJINFO = os.path.join(SARUMAN, 'objinfo')
 OBJPATCH = os.path.join(SARUMAN, 'objpatch')
 OBJCAT = os.path.join(SARUMAN, 'objcat')
 
+debug = False
+if sys.argv[1] == '--debug':
+	debug = True
+	del sys.argv[1]
+
 KERNEL, SIGMA0, OUTPUT = sys.argv[1], sys.argv[2], sys.argv[3]
 
 def hex_objinfo(filename, *args):
@@ -25,6 +30,12 @@ SIGMA0_ENTRYPOINT = hex_objinfo(SIGMA0, '--entrypoint')
 # TODO: mips-specific portion; sigma0 vaddrs end up in kernel space.
 SIGMA0_HIGHEST_VADDR |= 0x80000000 # convert to kseg0
 # end mips-specific portion.
+
+if debug:
+	print('%08x: Kernel memory layout' % (KERNEL_MEMORY_LAYOUT_STRUCT,))
+	print('%08x: Lowest vaddr' % (KERNEL_LOWEST_VADDR,))
+	print('%08x: Highest vaddr' % (SIGMA0_HIGHEST_VADDR,))
+	print('%08x: Sigma0 entrypoint' % (SIGMA0_ENTRYPOINT,))
 
 # create the main executable
 concatenator = subprocess.Popen([OBJCAT, '--to-kseg0', KERNEL, SIGMA0], stdout=subprocess.PIPE)

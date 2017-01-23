@@ -83,6 +83,11 @@ multicore_entrypoint_asm:
 
 .end multicore_entrypoint_asm
 
-.globl multicore_entrypoint_asm_end
 multicore_entrypoint_asm_end:
+
+.data
+.globl multicore_entrypoint_asm_length
+multicore_entrypoint_asm_length:
+	.word (multicore_entrypoint_asm_end - multicore_entrypoint_asm)
+
 

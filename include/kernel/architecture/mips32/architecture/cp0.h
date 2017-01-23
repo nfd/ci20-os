@@ -20,6 +20,8 @@
 #define CP0_STATUS_CU_ALL 0xf0000000
 #define CP0_STATUS_BEV (1 << 22)
 #define CP0_STATUS_SR (1 << 20)
+#define CP0_STATUS_KSU_USER (2 << 3)
+#define CP0_STATUS_EXL (1 << 1)
 #define CP0_STATUS_IM_ALL 0xff00
 #define CP0_STATUS_IE 0x1
 

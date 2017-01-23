@@ -34,6 +34,6 @@ struct architecture_userstate {
 	uint32_t fp;
 	uint32_t ra;
 	uint32_t sp;
-	uint32_t cp0_ErrorEPC;
+	uint32_t cp0_EPC;
 };
 

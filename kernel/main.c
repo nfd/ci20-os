@@ -35,7 +35,7 @@ void common_entrypoint(void)
 void unicore_entrypoint(void)
 {
 	system_init();
-	//ostimer_register_callback(counter_incrementer);
+	ostimer_register_callback(counter_incrementer);
 
 	common_entrypoint();
 }

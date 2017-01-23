@@ -41,8 +41,8 @@
 .endm
 
 .macro saveregisters_exc
-	mfc0 t0, CP0_EPC
-	sw t0, 116(k0)
+	mfc0 k1, CP0_EPC
+	sw k1, 116(k0)
 .endm
 
 .macro restoreregisters
@@ -78,12 +78,16 @@
 .endm
 
 .macro restoreregisters_exc
-	lw t0, 116(k0)
-	mtc0 t0, CP0_EPC
+	lw k1, 116(k0)
+	mtc0 k1, CP0_EPC
+	nop
 .endm
 
 /* We use ... 01 1111 i.e. cache=3, dirty=1, valid=1, global=1 */
-#define ENTRYLO_DIRECT_MAP_TEMPLATE 0x1f
+#define ENTRYLO0_DIRECT_MAP_TEMPLATE 0b00011111
+
+/* For the next page, same as above but with the LSB of the frame number set, i.e. 101 1111 */
+#define ENTRYLO1_DIRECT_MAP_TEMPLATE 0b01011111
 
 .org 0x0
 .set noreorder
@@ -92,28 +96,24 @@ _exc_tlb_refill:
 	/* Directly map userspace to page frames */
 	mfc0 k0, CP0_BADVADDR
 
-	/* k0 will become entrylo -- mask off everything below the frame */
-	srl k0, k0, 12
+	/* BADVADDR will become entrylo, so mask off stuff below the two frames we're replacing */
+	srl k0, k0, 13
 	move k1, k0
 
 	/* ... move into the right place for entrylo. */
-	sll k0, k0, 6
+	sll k0, k0, 7
 	/* ... and mask in our default ENTRYLO setup */
-	ori k0, k0, ENTRYLO_DIRECT_MAP_TEMPLATE
-
+	ori k0, k0, ENTRYLO0_DIRECT_MAP_TEMPLATE
 	mtc0 k0, CP0_ENTRYLO0
+
 	/* Prepare entrylo1 */
-	addi k1, k1, 1 /* next page */
-	sll k1, k1, 6
-	ori k1, k1, ENTRYLO_DIRECT_MAP_TEMPLATE
+	sll k1, k1, 7
+	ori k1, k1, ENTRYLO1_DIRECT_MAP_TEMPLATE
 	mtc0 k1, CP0_ENTRYLO1
 	nop
 
 	tlbwr
-	nop
-
 	eret
-	nop
 
 .org 0x180
 _exc_asm:
@@ -126,8 +126,10 @@ _irq_asm:
 	saveregisters
 
 	la sp, kernel_stack
+	addi sp, sp, KERNEL_STACK_SIZE
+
 	jal libci20_interrupt
-	addi sp, sp, KERNEL_STACK_SIZE - 4 /* in delay slot */
+	nop
 
 	la k0, current
 	restoreregisters
@@ -141,8 +143,8 @@ _exc_asm_continue:
 	saveregisters_exc
 
 	la sp, kernel_stack
+	addi sp, sp, KERNEL_STACK_SIZE
 
-	addi sp, sp, KERNEL_STACK_SIZE - 4
 	mfc0 a3, CP0_CAUSE
 
 	jal mips_exception

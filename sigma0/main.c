@@ -16,6 +16,13 @@ void entrypoint(int core_num)
 	syscall_putchar_debug('0' + core_num);
 	syscall_putchar_debug('\r');
 	syscall_putchar_debug('\n');
+
+	/* Attempt to access kernel space -- should cause an exception */
+	/*
+	volatile uint8_t *kernel = (uint8_t *)0x80000000;
+	*kernel++;
+	*/
+
 	while(1) {
 		__asm__("wait");
 	}
