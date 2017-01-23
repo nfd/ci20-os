@@ -58,14 +58,6 @@ class RAMInfo:
 	def size(self, rank=1):
 		return (2**self.rows) * (2**self.columns) * self.banks * (self.bus_width_bits // 8)
 
-	def size_mask(self, rank=1):
-		size = self.size(rank=rank)
-		if self.follow_reference_code:
-			size *= 2 # See comments around DMMAP0 register configuration
-
-		return 0x100000000 - size
-
-
 class RegPart:
 	" Represents a contiguous named portion of a memory-mapped device register "
 
@@ -718,16 +710,16 @@ def init_ram(hardware, ram):
 			tCFGR=ram.ddr_dtiming6_tCFGR.ticks)
 
 	hardware.note('map memory')
-	# Mapping memory is strange: the reference code attempts to ensure that there
-	# is always memory available at 0x20000000 (=512MB) physical. We just assume
-	# that we always have just the one 1GB rank, however.
-	# TODO: Likely because bus addresses 0x10000000..0x1fffffff map to devices? We
-	# need to skip them in ram mappings or we're making 256MB of RAM inaccessible.
-	assert ram.ranks == 1 and ram.size(rank=1) > 512 * 1024 * 1024
-	# Map rank 0 at paddr 0
+
+	# Map the RAM directly starting at address 0. We don't support more than one rank.
+	# It appears that the DDRC magically avoids the peripheral space at 0x10000000..0x20000000,
+	# so it's fine to just map the entire 1GB region.
+	assert ram.ranks == 1
 	# Note: This is very weird: the reference code multiplies size by 2 here when
 	# calculating the mask. Seems wrong!
-	hardware.write_register('DDR.DMMAP0', BASE=0, MASK=ram.size_mask(rank=1) >> 24)
+	# In any case, we want 256MB of RAM at addreses 0x0..0x10000000:
+	hardware.write_register('DDR.DMMAP0', BASE=0x0, MASK=0x80)
+	# ... and the rest of it at addresses 0x20000000 and up.
 	hardware.write_register('DDR.DMMAP1', BASE=0xFF, MASK=0) # Default no-RAM-here value
 
 	hardware.note('enable DDRC')
@@ -760,7 +752,7 @@ def init_ram(hardware, ram):
 
 def generate(output):
 	# Samsung 256Mx8 DDR3L-1600, 400MHz clock
-	ram = RAMInfo('K4B2G0846Q-BYK0', 400000000, follow_reference_code=True) 
+	ram = RAMInfo('K4B2G0846Q-BYK0', 400000000, follow_reference_code=False) 
 	ram.tRTP = NS('max(4 * nCK, 7.5)')
 	ram.tWTR = NS('max(4 * nCK, 7.5)')
 	ram.tWR = NS(15)
