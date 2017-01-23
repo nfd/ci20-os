@@ -16,7 +16,7 @@ static void mips_syscall(uint32_t arg0, uint32_t arg1, uint32_t arg2)
 			uart_print("syscall %x4 %x4 %x4 %x4\r\n", current.v0, arg0, arg1, arg2);
 	}
 
-	current.cp0_ErrorEPC += 4;
+	current.cp0_EPC += 4;
 }
 
 void mips_exception(uint32_t arg0, uint32_t arg1, uint32_t arg2, uint32_t cause)
