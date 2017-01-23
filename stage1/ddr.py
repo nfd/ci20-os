@@ -717,9 +717,7 @@ def init_ram(hardware, ram):
 	assert ram.ranks == 1
 	# Note: This is very weird: the reference code multiplies size by 2 here when
 	# calculating the mask. Seems wrong!
-	# In any case, we want 256MB of RAM at addreses 0x0..0x10000000:
 	hardware.write_register('DDR.DMMAP0', BASE=0x0, MASK=0x80)
-	# ... and the rest of it at addresses 0x20000000 and up.
 	hardware.write_register('DDR.DMMAP1', BASE=0xFF, MASK=0) # Default no-RAM-here value
 
 	hardware.note('enable DDRC')
