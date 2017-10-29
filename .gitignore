@@ -12,3 +12,4 @@ CMakeFiles
 cmake_install.cmake
 saruman
 Session.vim
+build/

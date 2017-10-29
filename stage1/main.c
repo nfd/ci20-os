@@ -2,7 +2,7 @@
 #include <system/board.h>
 #include <architecture/peekpoke.h>
 
-#include "timer_basic.h"
+#include <stage1/timer_basic.h>
 #include "pllclock.h"
 #include "ddr.h"
 #include "memtest.h"

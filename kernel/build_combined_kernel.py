@@ -3,19 +3,18 @@ import os
 import sys
 import subprocess
 
-# args: <kernel> <sigma0> <output>
-
-SARUMAN = 'saruman'
-OBJINFO = os.path.join(SARUMAN, 'objinfo')
-OBJPATCH = os.path.join(SARUMAN, 'objpatch')
-OBJCAT = os.path.join(SARUMAN, 'objcat')
+# args: <path to saruman> <kernel> <sigma0> <output>
 
 debug = False
 if sys.argv[1] == '--debug':
 	debug = True
 	del sys.argv[1]
 
-KERNEL, SIGMA0, OUTPUT = sys.argv[1], sys.argv[2], sys.argv[3]
+SARUMAN, KERNEL, SIGMA0, OUTPUT = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
+
+OBJINFO = os.path.join(SARUMAN, 'objinfo')
+OBJPATCH = os.path.join(SARUMAN, 'objpatch')
+OBJCAT = os.path.join(SARUMAN, 'objcat')
 
 def hex_objinfo(filename, *args):
 	result = subprocess.run((OBJINFO,) + args + (filename,), stdout=subprocess.PIPE)

@@ -5,8 +5,8 @@ target_include_directories(kernel.elf PUBLIC ../include ../include/architecture/
 target_link_libraries(kernel.elf PUBLIC system)
 
 set_target_properties(kernel.elf PROPERTIES
-	LINK_DEPENDS kernel/linker.lds
-	LINK_FLAGS "-T linker.lds")
+	LINK_DEPENDS ${PROJECT_SOURCE_DIR}/kernel/linker.lds
+	LINK_FLAGS "-T ${PROJECT_SOURCE_DIR}/kernel/linker.lds")
 
 # Very evil custom command to trigger sigma0 rebuild after kernel was built.
 add_custom_command(TARGET kernel.elf POST_BUILD COMMAND touch ../sigma0/kernel_was_rebuilt.c)

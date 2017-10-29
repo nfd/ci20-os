@@ -3,7 +3,7 @@
 #include <system/board.h>
 #include "../driver/jz47xx-timer/timer_internal.h"
 
-#include "timer_basic.h"
+#include <stage1/timer_basic.h>
 
 /*
  * Spin timer functions

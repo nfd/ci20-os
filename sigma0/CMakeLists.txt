@@ -1,5 +1,5 @@
 add_custom_command(OUTPUT base_vaddr.lds
-	COMMAND ./gen_highest_vaddr.sh
+	COMMAND ${PROJECT_SOURCE_DIR}/sigma0/gen_highest_vaddr.sh ${CMAKE_BINARY_DIR}
 	DEPENDS kernel.elf
 	)
 
@@ -14,6 +14,6 @@ add_dependencies(sigma0.elf kernel.elf gen_highest_vaddr_target)
 
 set_target_properties(sigma0.elf PROPERTIES
 	LINK_DEPENDS sigma0/linker.lds
-	LINK_DEPENDS sigma0/gen_highest_vaddr.sh
-	LINK_FLAGS "-T linker.lds")
+	LINK_DEPENDS ${PROJECT_SOURCE_DIR}/sigma0/gen_highest_vaddr.sh
+	LINK_FLAGS "-T ${PROJECT_SOURCE_DIR}/sigma0/linker.lds")
 

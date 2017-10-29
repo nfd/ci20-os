@@ -53,8 +53,8 @@ add_subdirectory(sigma0)
 
 # Combined kernel+sigma0 builder
 add_custom_command(OUTPUT kernel_combined.elf
-	COMMAND ./build_combined_kernel.py $<TARGET_FILE:kernel.elf> $<TARGET_FILE:sigma0.elf> kernel_combined.elf
-	DEPENDS kernel.elf sigma0.elf build_combined_kernel.py
+	COMMAND ${PROJECT_SOURCE_DIR}/kernel/build_combined_kernel.py ${PROJECT_SOURCE_DIR}/saruman $<TARGET_FILE:kernel.elf> $<TARGET_FILE:sigma0.elf> kernel_combined.elf
+	DEPENDS kernel.elf sigma0.elf ${PROJECT_SOURCE_DIR}/kernel/build_combined_kernel.py
 	COMMENT "Creating kernel+sigma0 combined ELF")
 
 add_custom_target(kernel_combined ALL DEPENDS kernel_combined.elf)
