@@ -1,6 +1,5 @@
 /* Our stack -- we get one per hardware thread */
 #include <inttypes.h>
-#include <stdbool.h>
 #include <soc/config.h>
 #include <architecture/memory.h>
 #include <syscalls.h>
@@ -13,7 +12,7 @@ volatile uint8_t word = 0;
 
 static void increment(void)
 {
-	while(true)
+	while(1)
 		word ++;
 }
 
@@ -24,7 +23,7 @@ static inline char to_hex(uint8_t num)
 
 static void print(void)
 {
-	while(true) {
+	while(1) {
 		uint8_t current = word;
 		syscall_putchar_debug(to_hex(current >> 4));
 		syscall_putchar_debug(to_hex(current & 0xf));

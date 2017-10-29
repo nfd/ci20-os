@@ -13,7 +13,8 @@ static void mips_syscall(uint32_t arg0, uint32_t arg1, uint32_t arg2)
 			uart_putc(arg0);
 			break;
 		default:
-			uart_print("syscall %x4 %x4 %x4 %x4\r\n", current.v0, arg0, arg1, arg2);
+			//uart_print("syscall %x4 %x4 %x4 %x4\r\n", current.v0, arg0, arg1, arg2);
+			break;
 	}
 
 	current.cp0_EPC += 4;
@@ -30,8 +31,9 @@ void mips_exception(uint32_t arg0, uint32_t arg1, uint32_t arg2, uint32_t cause)
 			break;
 		default:
 			/* Can't handle it -- panic for now (later: kill current?) */
-			uart_print("unknown exc exccode %x4 cause %x4\r\n", exccode, cause);
-			uart_print("badvaddr %x4\r\n", mips_read_cp0_badvaddr());
+			uart_puts("unknown exc\r\n");
+			//uart_print("unknown exc exccode %x4 cause %x4\r\n", exccode, cause);
+			//uart_print("badvaddr %x4\r\n", mips_read_cp0_badvaddr());
 			while(1) {
 				__asm__("wait");
 			}

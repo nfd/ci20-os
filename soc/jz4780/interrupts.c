@@ -14,7 +14,7 @@ void intc_register_handler_raw(int index, irqhandler handler)
 
 static void intc_dummy_handler(void)
 {
-	uart_print("Ignoring unexpected interrupt!\r\n");
+	uart_puts("Ignoring unexpected interrupt!\r\n");
 }
 
 void intc_init(void)

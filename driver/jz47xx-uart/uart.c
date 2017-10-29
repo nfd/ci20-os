@@ -1,5 +1,3 @@
-#include <stdarg.h>
-
 #include <kernel/driver/jz47xx-uart/jz47xx-uart.h>
 #include <architecture/peekpoke.h>
 #include <kernel/soc/jz4780/jz47xx-devices.h>
@@ -172,44 +170,4 @@ void uart_puthex64(uint64_t val)
 	uart_puthex32(val & 0xFFFFFFFF);
 }
 
-/* Super-mini printf. Recognises:
- *
- * All backslash sequences (C compiler does this for us)
- * %x4 - 32-bit hex value (nb both characters required)
- * %x8 - 64-bit hex value (as above)
- * %c  - a char
- * %s  - a c string
-*/
-void uart_print(char *fmt, ...)
-{
-	va_list args;
-
-	va_start(args, fmt);
-	for(;*fmt;) {
-		char c = *fmt++;
-		if(c == '%') {
-			switch(*fmt++) {
-			case 'x':
-				switch(*fmt++) {
-				case '4':
-					uart_puthex32(va_arg(args, uint32_t));
-					break;
-				case '8':
-					uart_puthex64(va_arg(args, uint64_t));
-					break;
-				}
-				break;
-			case 'c':
-				uart_putc(va_arg(args, int));
-				break;
-			case 's':
-				uart_puts(va_arg(args, char *));
-				break;
-			}
-		} else {
-			uart_putc(c);
-		}
-	}
-	va_end(args);
-}
 

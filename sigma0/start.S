@@ -1,6 +1,6 @@
 #include "architecture/mipsregs.h"
 
-.section .start,"x"
+.section .start,"ax"
 
 .set noreorder
 

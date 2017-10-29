@@ -17,9 +17,7 @@ struct architecture_userstate current;
 /* Entrypoint for all cores after the system has started */
 void common_entrypoint(void)
 {
-	int val;
-
-	uart_print("Hello, world! %x4 \r\n", &val);
+	uart_puts("Hello, world!");
 	for(volatile int i = 0; i < 0xffffff; i++)
 		;
 

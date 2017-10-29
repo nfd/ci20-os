@@ -3,7 +3,7 @@
 #include "architecture/cache.h"
 #include "architecture/kernelstack.h"
 
-.section .start,"x"
+.section .start,"ax"
 
 .set noreorder
 
